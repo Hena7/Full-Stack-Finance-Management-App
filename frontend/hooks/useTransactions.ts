@@ -1,11 +1,12 @@
 export type TransactionType = "income" | "expense";
 
 export interface Transaction {
-  id: string; // Backend uses Long, but we can treat as string/number
+  id: string; // Backend uses Long, treated as string
   amount: number;
   type: TransactionType;
-  category: string; // Currently string, but backend has Category entity
-  description?: string; // Backend uses description, not note
+  categoryId?: number; // Backend category ID
+  category?: string; // Category name (for display only, filled from Backend response)
+  description?: string; // Backend uses 'description'
   date: string;
 }
 

@@ -27,7 +27,7 @@ export function TransactionForm({
 
   const categories = getCategoriesByType(type).map((c) => ({
     label: c.name,
-    value: c.name,
+    value: c.id.toString(), // Use ID as value, not name
   }));
 
   const paymentMethods = [
@@ -40,10 +40,10 @@ export function TransactionForm({
 
   const [formData, setFormData] = useState({
     amount: "",
-    category: "",
+    categoryId: "", // stores the category ID (number as string)
     paymentMethod: "",
     date: new Date().toISOString().split("T")[0],
-    note: "",
+    description: "", // maps to Backend's 'description' field
   });
 
   const [loading, setLoading] = useState(false);
@@ -55,18 +55,20 @@ export function TransactionForm({
     if (transaction) {
       setFormData({
         amount: transaction.amount.toString(),
-        category: transaction.category,
-        paymentMethod: transaction.paymentMethod || "",
+        categoryId: transaction.categoryId
+          ? transaction.categoryId.toString()
+          : "",
+        paymentMethod: "",
         date: transaction.date,
-        note: transaction.note || "",
+        description: transaction.description || "",
       });
     } else {
       setFormData({
         amount: "",
-        category: "",
+        categoryId: "",
         paymentMethod: "",
         date: new Date().toISOString().split("T")[0],
-        note: "",
+        description: "",
       });
     }
   }, [transaction]);
@@ -80,8 +82,11 @@ export function TransactionForm({
       return;
     }
 
-    if (!formData.category) {
-      setErrors((prev) => ({ ...prev, category: "Please select a category" }));
+    if (!formData.categoryId) {
+      setErrors((prev) => ({
+        ...prev,
+        categoryId: "Please select a category",
+      }));
       return;
     }
 
@@ -97,18 +102,20 @@ export function TransactionForm({
 
     try {
       onSubmit({
-        ...formData,
-        type,
         amount: Number(formData.amount),
+        categoryId: Number(formData.categoryId), // Send ID to Backend
+        description: formData.description, // Maps to Backend's 'description'
+        date: formData.date,
+        type,
       });
 
       if (!isEdit) {
         setFormData({
           amount: "",
-          category: "",
+          categoryId: "",
           paymentMethod: "",
           date: new Date().toISOString().split("T")[0],
-          note: "",
+          description: "",
         });
       }
     } finally {
@@ -135,9 +142,11 @@ export function TransactionForm({
         options={categories}
         placeholder="Select a category"
         required
-        value={formData.category}
-        onChange={(e) => setFormData({ ...formData, category: e.target.value })}
-        error={errors.category}
+        value={formData.categoryId}
+        onChange={(e) =>
+          setFormData({ ...formData, categoryId: e.target.value })
+        }
+        error={errors.categoryId}
       />
 
       {type === "expense" && (
@@ -164,11 +173,13 @@ export function TransactionForm({
       />
 
       <Textarea
-        label="Note (Optional)"
-        placeholder="Add a note..."
+        label="Description (Optional)"
+        placeholder="Add a description..."
         rows={3}
-        value={formData.note}
-        onChange={(e) => setFormData({ ...formData, note: e.target.value })}
+        value={formData.description}
+        onChange={(e) =>
+          setFormData({ ...formData, description: e.target.value })
+        }
       />
 
       <div className="flex gap-3 pt-4">

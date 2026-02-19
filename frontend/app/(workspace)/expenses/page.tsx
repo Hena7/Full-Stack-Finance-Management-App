@@ -37,17 +37,25 @@ export default function ExpensesPage() {
     setShowEditModal(true);
   };
 
-  const handleUpdate = (data: any) => {
+  const handleUpdate = async (data: any) => {
     if (editingTransaction) {
-      updateTransaction(editingTransaction.id, data);
-      setShowEditModal(false);
-      setEditingTransaction(null);
+      try {
+        await updateTransaction(editingTransaction.id, "expense", data);
+        setShowEditModal(false);
+        setEditingTransaction(null);
+      } catch (error) {
+        console.error("Failed to update expense", error);
+      }
     }
   };
 
-  const handleDelete = (id: string) => {
+  const handleDelete = async (id: string) => {
     if (confirm("Are you sure you want to delete this expense?")) {
-      deleteTransaction(id);
+      try {
+        await deleteTransaction(id, "expense");
+      } catch (error) {
+        console.error("Failed to delete expense", error);
+      }
     }
   };
 

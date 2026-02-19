@@ -1,110 +1,75 @@
 "use client";
 
 import { useAuth } from "@/context/AuthContext";
-import { useState, useEffect, useMemo } from "react";
+import { useState, useEffect, useCallback, useMemo } from "react";
+import {
+  CategoryService,
+  Category as BackendCategory,
+} from "@/lib/services/categoryService";
 
+// Frontend-facing Category type (lowercase type to match TransactionType)
 export type CategoryType = "income" | "expense";
 
 export interface Category {
-  id: string;
+  id: number; // Now a number (Backend Long)
   name: string;
-  type: CategoryType;
-  isDefault: boolean;
-  createdAt?: string;
+  type: CategoryType; // lowercase for Frontend consistency
 }
 
-const DEFAULT_CATEGORIES = {
-  income: ["Salary", "Freelance", "Investment", "Gift"],
-  expense: [
-    "Food",
-    "Transport",
-    "Rent",
-    "Utilities",
-    "Entertainment",
-    "Healthcare",
-    "Shopping",
-  ],
-};
-
 export function useCategories() {
-  const { currentUser } = useAuth();
+  const { isAuthenticated } = useAuth();
   const [categories, setCategories] = useState<Category[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
 
-  const getStorageKey = (userId: string) => `budgetwise_categories_${userId}`;
+  // Map Backend category (INCOME/EXPENSE) to Frontend category (income/expense)
+  const mapToFrontend = (cat: BackendCategory): Category => ({
+    id: cat.id,
+    name: cat.name,
+    type: cat.type.toLowerCase() as CategoryType,
+  });
 
-  // Load categories
+  const refreshCategories = useCallback(async () => {
+    if (!isAuthenticated) return;
+    setIsLoading(true);
+    try {
+      const data = await CategoryService.getAll();
+      setCategories(data.map(mapToFrontend));
+    } catch (error) {
+      console.error("Failed to fetch categories:", error);
+    } finally {
+      setIsLoading(false);
+    }
+  }, [isAuthenticated]);
+
   useEffect(() => {
-    if (!currentUser) {
-      setCategories([]);
-      return;
-    }
-
-    const key = getStorageKey(currentUser.id);
-    const data = localStorage.getItem(key);
-
-    if (data) {
-      setCategories(JSON.parse(data));
+    if (isAuthenticated) {
+      refreshCategories();
     } else {
-      initializeDefaultCategories();
+      setCategories([]);
+      setIsLoading(false);
     }
-  }, [currentUser]);
+  }, [isAuthenticated, refreshCategories]);
 
-  const saveCategories = (cats: Category[]) => {
-    if (!currentUser) return;
-    const key = getStorageKey(currentUser.id);
-    localStorage.setItem(key, JSON.stringify(cats));
-    setCategories(cats);
+  // Add a new category by calling the Backend
+  const addCategory = async (
+    name: string,
+    type: CategoryType,
+  ): Promise<Category> => {
+    const backendType = type.toUpperCase() as "INCOME" | "EXPENSE";
+    const created = await CategoryService.create(name, backendType);
+    const mapped = mapToFrontend(created);
+    setCategories((prev) => [...prev, mapped]);
+    return mapped;
   };
 
-  const initializeDefaultCategories = () => {
-    if (!currentUser) return;
-
-    const defaultCats: Category[] = [];
-
-    DEFAULT_CATEGORIES.income.forEach((name) => {
-      defaultCats.push({
-        id: `income-${Date.now()}-${Math.random()}`,
-        name,
-        type: "income",
-        isDefault: true,
-      });
-    });
-
-    DEFAULT_CATEGORIES.expense.forEach((name) => {
-      defaultCats.push({
-        id: `expense-${Date.now()}-${Math.random()}`,
-        name,
-        type: "expense",
-        isDefault: true,
-      });
-    });
-
-    saveCategories(defaultCats);
+  // Delete a category
+  const deleteCategory = async (id: number): Promise<void> => {
+    await CategoryService.delete(id);
+    setCategories((prev) => prev.filter((c) => c.id !== id));
   };
 
-  const addCategory = (name: string, type: CategoryType) => {
-    const newCategory: Category = {
-      id: `${type}-${Date.now()}`,
-      name,
-      type,
-      isDefault: false,
-      createdAt: new Date().toISOString(),
-    };
-    saveCategories([...categories, newCategory]);
-    return newCategory;
-  };
-
-  const deleteCategory = (id: string) => {
-    const category = categories.find((c) => c.id === id);
-    if (category && !category.isDefault) {
-      const newCats = categories.filter((c) => c.id !== id);
-      saveCategories(newCats);
-      return true;
-    }
-    return false;
-  };
-
-  const getCategoriesByType = (type: CategoryType) => {
+  // Filter categories by type (income | expense)
+  const getCategoriesByType = (type: CategoryType): Category[] => {
     return categories.filter((c) => c.type === type);
   };
 
@@ -119,10 +84,12 @@ export function useCategories() {
 
   return {
     categories,
+    isLoading,
     addCategory,
     deleteCategory,
     getCategoriesByType,
     incomeCategories,
     expenseCategories,
+    refreshCategories,
   };
 }

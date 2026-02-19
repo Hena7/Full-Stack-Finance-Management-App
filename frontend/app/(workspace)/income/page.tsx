@@ -27,9 +27,14 @@ export default function IncomePage() {
 
   const incomeList = getTransactionsByType("income");
 
-  const handleAdd = (data: any) => {
-    addTransaction(data);
-    setShowAddModal(false);
+  const handleAdd = async (data: any) => {
+    try {
+      await addTransaction({ ...data, type: "income" });
+      setShowAddModal(false);
+    } catch (error) {
+      console.error("Failed to add income", error);
+      // You might want to show a toast notification here
+    }
   };
 
   const handleEdit = (transaction: Transaction) => {
@@ -37,17 +42,25 @@ export default function IncomePage() {
     setShowEditModal(true);
   };
 
-  const handleUpdate = (data: any) => {
-    if (editingTransaction) {
-      updateTransaction(editingTransaction.id, data);
-      setShowEditModal(false);
-      setEditingTransaction(null);
-    }
+  const handleUpdate = async (data: any) => {
+      if (editingTransaction) {
+        try {
+          await updateTransaction(editingTransaction.id, "income", data);
+          setShowEditModal(false);
+          setEditingTransaction(null);
+        } catch (error) {
+          console.error("Failed to update income", error);
+        }
+      }
   };
 
-  const handleDelete = (id: string) => {
+  const handleDelete = async (id: string) => {
     if (confirm("Are you sure you want to delete this income?")) {
-      deleteTransaction(id);
+      try {
+        await deleteTransaction(id, "income");
+      } catch (error) {
+        console.error("Failed to delete income", error);
+      }
     }
   };
 
