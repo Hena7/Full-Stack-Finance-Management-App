@@ -19,6 +19,7 @@ export default function Signup() {
     confirmPassword: "",
   });
   const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
 
   React.useEffect(() => {
     if (isAuthenticated) {
@@ -26,7 +27,7 @@ export default function Signup() {
     }
   }, [isAuthenticated, router]);
 
-  const handleSubmit = (e: React.SubmitEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError("");
 
@@ -35,11 +36,16 @@ export default function Signup() {
       return;
     }
 
+    setLoading(true);
     try {
-      register(formData.name, formData.email, formData.password);
-      // Auto-login happens in register, redirect handled by useEffect
+      await register(formData.name, formData.email, formData.password);
+      router.push("/dashboard");
     } catch (err: any) {
-      setError(err.message);
+      setError(
+        err.response?.data?.message || err.message || "Registration failed",
+      );
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -104,8 +110,13 @@ export default function Signup() {
             )}
 
             <div className="pt-2">
-              <Button type="submit" className="w-full py-3" variant="success">
-                Create Account
+              <Button
+                type="submit"
+                className="w-full py-3"
+                variant="success"
+                disabled={loading}
+              >
+                {loading ? "Creating Account..." : "Create Account"}
               </Button>
             </div>
           </form>

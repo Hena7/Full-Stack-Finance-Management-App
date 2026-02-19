@@ -1,23 +1,22 @@
 "use client";
 
 import React, { createContext, useContext, useEffect, useState } from "react";
+import { AuthApiService } from "@/lib/services/authService";
 
-const USERS_KEY = "budgetwise_users";
+const TOKEN_KEY = "budgetwise_token";
 const CURRENT_USER_KEY = "budgetwise_current_user";
 
 interface User {
-  id: string;
-  name: string;
   email: string;
-  password?: string;
-  createdAt: string;
+  name: string; // We store this locally since Backend token doesn't include it
 }
 
 interface AuthContextType {
   currentUser: User | null;
   isAuthenticated: boolean;
-  register: (name: string, email: string, password: string) => void;
-  login: (email: string, password: string) => void;
+  isLoading: boolean;
+  register: (name: string, email: string, password: string) => Promise<void>;
+  login: (email: string, password: string) => Promise<void>;
   logout: () => void;
 }
 
@@ -27,61 +26,45 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [currentUser, setCurrentUser] = useState<User | null>(null);
   const [isLoading, setIsLoading] = useState(true);
 
-  // Load user from local storage on mount
+  // On app start: check if token + user exists in localStorage
   useEffect(() => {
-    const user = localStorage.getItem(CURRENT_USER_KEY);
-    if (user) {
-      setCurrentUser(JSON.parse(user));
+    const token = localStorage.getItem(TOKEN_KEY);
+    const savedUser = localStorage.getItem(CURRENT_USER_KEY);
+    if (token && savedUser) {
+      setCurrentUser(JSON.parse(savedUser));
     }
     setIsLoading(false);
   }, []);
 
-  const getUsers = (): User[] => {
-    const users = localStorage.getItem(USERS_KEY);
-    return users ? JSON.parse(users) : [];
+  // Register: call Spring Boot /api/auth/register, then auto-login
+  const register = async (
+    name: string,
+    email: string,
+    password: string,
+  ): Promise<void> => {
+    await AuthApiService.register(name, email, password);
+    // After registration, immediately login to get the token
+    await login(email, password);
   };
 
-  const saveUsers = (users: User[]) => {
-    localStorage.setItem(USERS_KEY, JSON.stringify(users));
-  };
+  // Login: call Spring Boot /api/auth/login, save token
+  const login = async (email: string, password: string): Promise<void> => {
+    const response = await AuthApiService.login(email, password);
 
-  const register = (name: string, email: string, password: string) => {
-    const users = getUsers();
-    const existingUser = users.find((u) => u.email === email);
-    if (existingUser) {
-      throw new Error("User with this email already exists");
-    }
+    // Save the JWT token (axios interceptor will use it)
+    localStorage.setItem(TOKEN_KEY, response.token);
 
-    const newUser: User = {
-      id: Date.now().toString(),
-      name,
-      email,
-      password,
-      createdAt: new Date().toISOString(),
-    };
-
-    users.push(newUser);
-    saveUsers(users);
-    login(email, password);
-  };
-
-  const login = (email: string, password: string) => {
-    const users = getUsers();
-    const user = users.find(
-      (u) => u.email === email && u.password === password,
-    );
-
-    if (!user) {
-      throw new Error("Invalid email or password");
-    }
-
-    setCurrentUser(user);
+    // Save user info locally (Backend token contains email via JWT claims)
+    const user: User = { email, name: email.split("@")[0] }; // Use email prefix as name fallback
     localStorage.setItem(CURRENT_USER_KEY, JSON.stringify(user));
+    setCurrentUser(user);
   };
 
+  // Logout: remove token and user from localStorage
   const logout = () => {
-    setCurrentUser(null);
+    localStorage.removeItem(TOKEN_KEY);
     localStorage.removeItem(CURRENT_USER_KEY);
+    setCurrentUser(null);
   };
 
   return (
@@ -89,6 +72,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       value={{
         currentUser,
         isAuthenticated: !!currentUser,
+        isLoading,
         register,
         login,
         logout,

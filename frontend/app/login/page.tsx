@@ -11,9 +11,10 @@ import { Input } from "@/components/ui/input";
 export default function Login() {
   const router = useRouter();
   const { login, isAuthenticated } = useAuth();
-  const [email, setEmail] = useState("demo@example.com");
-  const [password, setPassword] = useState("password");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
   const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
 
   React.useEffect(() => {
     if (isAuthenticated) {
@@ -21,13 +22,17 @@ export default function Login() {
     }
   }, [isAuthenticated, router]);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError("");
+    setLoading(true);
     try {
-      login(email, password);
+      await login(email, password);
+      router.push("/dashboard"); // Redirect after successful login
     } catch (err: any) {
-      setError(err.message);
+      setError(err.response?.data?.message || err.message || "Login failed");
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -66,8 +71,13 @@ export default function Login() {
               <p className="text-sm text-red-500 text-center">{error}</p>
             )}
 
-            <Button type="submit" className="w-full py-3" variant="success">
-              Login
+            <Button
+              type="submit"
+              className="w-full py-3"
+              variant="success"
+              disabled={loading}
+            >
+              {loading ? "Logging in..." : "Login"}
             </Button>
           </form>
           <div className="mt-6 text-center text-sm text-slate-400">

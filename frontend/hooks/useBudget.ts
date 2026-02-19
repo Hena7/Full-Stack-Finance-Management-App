@@ -16,10 +16,10 @@ export interface Budget {
 
 export function useBudget() {
   const { currentUser } = useAuth();
-  const { getTransactionsByMonth } = useTransactions();
+  const { transactions } = useTransactions();
   const [budgets, setBudgets] = useState<Budget[]>([]);
 
-  const getStorageKey = (userId: string) => `budgetwise_budgets_${userId}`;
+  const getStorageKey = (email: string) => `budgetwise_budgets_${email}`;
 
   // Load budgets
   useEffect(() => {
@@ -28,7 +28,7 @@ export function useBudget() {
       return;
     }
 
-    const key = getStorageKey(currentUser.id);
+    const key = getStorageKey(currentUser.email); // Use email instead of id
     const data = localStorage.getItem(key);
 
     if (data) {
@@ -40,7 +40,7 @@ export function useBudget() {
 
   const saveBudgets = (newBudgets: Budget[]) => {
     if (!currentUser) return;
-    const key = getStorageKey(currentUser.id);
+    const key = getStorageKey(currentUser.email); // Use email instead of id
     localStorage.setItem(key, JSON.stringify(newBudgets));
     setBudgets(newBudgets);
   };
@@ -88,10 +88,17 @@ export function useBudget() {
   };
 
   const calculateSpent = (category: string, month: number, year: number) => {
-    const transactions = getTransactionsByMonth(month, year, "expense");
-    return transactions
-      .filter((t) => t.category === category)
-      .reduce((sum, t) => sum + Number(t.amount), 0);
+    // Use transactions directly and filter manually
+    const categoryTransactions = transactions.filter((t) => {
+      const date = new Date(t.date);
+      return (
+        t.type === "expense" &&
+        t.category === category &&
+        date.getMonth() === month &&
+        date.getFullYear() === year
+      );
+    });
+    return categoryTransactions.reduce((sum, t) => sum + Number(t.amount), 0);
   };
 
   const calculateRemaining = (
