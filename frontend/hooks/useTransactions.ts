@@ -1,84 +1,85 @@
-"use client";
-
-import { useAuth } from "@/context/AuthContext";
-import { useState, useEffect, useMemo } from "react";
-
 export type TransactionType = "income" | "expense";
 
 export interface Transaction {
-  id: string;
+  id: string; // Backend uses Long, but we can treat as string/number
   amount: number;
   type: TransactionType;
-  category: string;
-  paymentMethod?: string;
+  category: string; // Currently string, but backend has Category entity
+  description?: string; // Backend uses description, not note
   date: string;
-  note?: string;
-  createdAt: string;
-  updatedAt?: string;
 }
 
+import { useState, useEffect, useMemo, useCallback } from "react";
+import { useAuth } from "@/context/AuthContext";
+import { TransactionService } from "@/lib/services/transactionService";
+
 export function useTransactions() {
-  const { currentUser } = useAuth();
+  const { isAuthenticated } = useAuth();
   const [transactions, setTransactions] = useState<Transaction[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
-  const getStorageKey = (userId: string) => `budgetwise_transactions_${userId}`;
-
-  // Load transactions
-  useEffect(() => {
-    if (!currentUser) {
-      setTransactions([]);
+  // Load transactions from API
+  const refreshTransactions = useCallback(async () => {
+    if (!isAuthenticated) return;
+    setIsLoading(true);
+    setError(null);
+    try {
+      const data = await TransactionService.getAll();
+      setTransactions(data);
+    } catch (err: any) {
+      console.error("Failed to fetch transactions:", err);
+      setError("Failed to load transactions.");
+    } finally {
       setIsLoading(false);
-      return;
     }
+  }, [isAuthenticated]);
 
-    const key = getStorageKey(currentUser.id);
-    const data = localStorage.getItem(key);
-
-    if (data) {
-      setTransactions(JSON.parse(data));
+  useEffect(() => {
+    if (isAuthenticated) {
+      refreshTransactions();
     } else {
       setTransactions([]);
+      setIsLoading(false);
     }
-    setIsLoading(false);
-  }, [currentUser]);
+  }, [isAuthenticated, refreshTransactions]);
 
-  const saveTransactions = (txs: Transaction[]) => {
-    if (!currentUser) return;
-    const key = getStorageKey(currentUser.id);
-    localStorage.setItem(key, JSON.stringify(txs));
-    setTransactions(txs);
+  const addTransaction = async (data: any) => {
+    try {
+      const newTx = await TransactionService.create(data);
+      // Optimistic update or refetch
+      setTransactions((prev) => [newTx, ...prev]);
+      return newTx;
+    } catch (err: any) {
+      console.error("Add failed:", err);
+      throw err;
+    }
   };
 
-  const addTransaction = (data: Omit<Transaction, "id" | "createdAt">) => {
-    const newTransaction: Transaction = {
-      id: Date.now().toString(),
-      ...data,
-      amount: Number(data.amount), // Ensure number
-      createdAt: new Date().toISOString(),
-    };
-    saveTransactions([newTransaction, ...transactions]); // Add to top
-    return newTransaction;
+  const updateTransaction = async (
+    id: string,
+    type: TransactionType,
+    updates: any,
+  ) => {
+    try {
+      const updatedTx = await TransactionService.update(id, type, updates);
+      setTransactions((prev) =>
+        prev.map((t) => (t.id === id ? { ...t, ...updatedTx } : t)),
+      );
+    } catch (err: any) {
+      console.error("Update failed:", err);
+      throw err;
+    }
   };
 
-  const updateTransaction = (id: string, updates: Partial<Transaction>) => {
-    const newTransactions = transactions.map((t) => {
-      if (t.id === id) {
-        return {
-          ...t,
-          ...updates,
-          amount: updates.amount ? Number(updates.amount) : t.amount,
-          updatedAt: new Date().toISOString(),
-        };
-      }
-      return t;
-    });
-    saveTransactions(newTransactions);
-  };
-
-  const deleteTransaction = (id: string) => {
-    const newTransactions = transactions.filter((t) => t.id !== id);
-    saveTransactions(newTransactions);
+  const deleteTransaction = async (id: string, type: TransactionType) => {
+    try {
+      await TransactionService.delete(id, type);
+      setTransactions((prev) => prev.filter((t) => t.id !== id));
+    } catch (err: any) {
+      console.error("Delete failed:", err);
+      throw err;
+    }
   };
 
   const getTransactionsByType = (type: TransactionType) => {
@@ -141,29 +142,16 @@ export function useTransactions() {
       .reduce((sum, t) => sum + Number(t.amount), 0);
   }, [transactions]);
 
-  const getTransactionsByMonth = (
-    month: number,
-    year: number,
-    type?: TransactionType,
-  ) => {
-    return transactions.filter((t) => {
-      const date = new Date(t.date);
-      const matchesMonth =
-        date.getMonth() === month && date.getFullYear() === year;
-      const matchesType = type ? t.type === type : true;
-      return matchesMonth && matchesType;
-    });
-  };
-
   return {
     transactions,
     isLoading,
+    error,
+    refreshTransactions,
     addTransaction,
     updateTransaction,
     deleteTransaction,
     getTransactionsByType,
     getRecentTransactions,
-    getTransactionsByMonth,
     totalIncome,
     totalExpense,
     balance,
