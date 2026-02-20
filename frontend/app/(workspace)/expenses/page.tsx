@@ -27,9 +27,13 @@ export default function ExpensesPage() {
 
   const expenseList = getTransactionsByType("expense");
 
-  const handleAdd = (data: any) => {
-    addTransaction(data);
-    setShowAddModal(false);
+  const handleAdd = async (data: any) => {
+    try {
+      await addTransaction({ ...data, type: "expense" });
+      setShowAddModal(false);
+    } catch (error) {
+      console.error("Failed to add expense", error);
+    }
   };
 
   const handleEdit = (transaction: Transaction) => {

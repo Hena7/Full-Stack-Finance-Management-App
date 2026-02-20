@@ -62,13 +62,13 @@ export function TransactionList({
                 <th className="text-left py-3 px-4 text-sm font-semibold text-slate-400">
                   Category
                 </th>
-                {type === "expense" && (
+                {/* {type === "expense" && (
                   <th className="text-left py-3 px-4 text-sm font-semibold text-slate-400">
                     Payment
                   </th>
-                )}
+                )} */}
                 <th className="text-left py-3 px-4 text-sm font-semibold text-slate-400">
-                  Note
+                  Note (description)
                 </th>
                 <th className="text-right py-3 px-4 text-sm font-semibold text-slate-400">
                   Amount
@@ -92,13 +92,13 @@ export function TransactionList({
                       {transaction.category}
                     </span>
                   </td>
-                  {type === "expense" && (
+                  {/* {type === "expense" && (
                     <td className="py-3 px-4 text-sm text-slate-400">
-                      {transaction.paymentMethod}
+                      {transaction.type}
                     </td>
-                  )}
+                  )} */}
                   <td className="py-3 px-4 text-sm text-slate-400 truncate max-w-xs">
-                    {transaction.note || "-"}
+                    {transaction.description || "-"}
                   </td>
                   <td className="py-3 px-4 text-right">
                     <span className={cn("font-semibold", amountClass)}>
