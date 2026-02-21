@@ -16,29 +16,39 @@ export default function CategoriesPage() {
   const [showAddExpense, setShowAddExpense] = useState(false);
   const [newCategoryName, setNewCategoryName] = useState("");
 
-  const handleAddIncome = (e: React.FormEvent) => {
+  const handleAddIncome = async (e: React.FormEvent) => {
     e.preventDefault();
     if (newCategoryName.trim()) {
-      addCategory(newCategoryName.trim(), "income");
-      setNewCategoryName("");
-      setShowAddIncome(false);
+      try {
+        await addCategory(newCategoryName.trim(), "income");
+        setNewCategoryName("");
+        setShowAddIncome(false);
+      } catch (error) {
+        console.error("Failed to add income category", error);
+      }
     }
   };
 
-  const handleAddExpense = (e: React.FormEvent) => {
+  const handleAddExpense = async (e: React.FormEvent) => {
     e.preventDefault();
     if (newCategoryName.trim()) {
-      addCategory(newCategoryName.trim(), "expense");
-      setNewCategoryName("");
-      setShowAddExpense(false);
+      try {
+        await addCategory(newCategoryName.trim(), "expense");
+        setNewCategoryName("");
+        setShowAddExpense(false);
+      } catch (error) {
+        console.error("Failed to add expense category", error);
+      }
     }
   };
 
-  const handleDelete = (id: string) => {
+  const handleDelete = async (id: number) => {
     if (confirm("Are you sure you want to delete this category?")) {
-      const success = deleteCategory(id);
-      if (!success) {
-        alert("Cannot delete default categories");
+      try {
+        await deleteCategory(id);
+      } catch (error) {
+        console.error("Failed to delete category", error);
+        alert("Failed to delete category. It might be in use.");
       }
     }
   };
@@ -85,22 +95,15 @@ export default function CategoriesPage() {
                   <span className="font-medium text-slate-200">
                     {category.name}
                   </span>
-                  {category.isDefault && (
-                    <span className="text-xs px-2 py-0.5 bg-blue-500/10 text-blue-500 rounded">
-                      Default
-                    </span>
-                  )}
                 </div>
 
-                {!category.isDefault && (
-                  <button
-                    onClick={() => handleDelete(category.id)}
-                    className="p-1.5 text-red-500 hover:bg-red-500/10 rounded-lg transition-colors"
-                    title="Delete category"
-                  >
-                    <Trash2 className="w-4 h-4" />
-                  </button>
-                )}
+                <button
+                  onClick={() => handleDelete(category.id)}
+                  className="p-1.5 text-red-500 hover:bg-red-500/10 rounded-lg transition-colors"
+                  title="Delete category"
+                >
+                  <Trash2 className="w-4 h-4" />
+                </button>
               </div>
             ))}
 
@@ -142,22 +145,15 @@ export default function CategoriesPage() {
                   <span className="font-medium text-slate-200">
                     {category.name}
                   </span>
-                  {category.isDefault && (
-                    <span className="text-xs px-2 py-0.5 bg-blue-500/10 text-blue-500 rounded">
-                      Default
-                    </span>
-                  )}
                 </div>
 
-                {!category.isDefault && (
-                  <button
-                    onClick={() => handleDelete(category.id)}
-                    className="p-1.5 text-red-500 hover:bg-red-500/10 rounded-lg transition-colors"
-                    title="Delete category"
-                  >
-                    <Trash2 className="w-4 h-4" />
-                  </button>
-                )}
+                <button
+                  onClick={() => handleDelete(category.id)}
+                  className="p-1.5 text-red-500 hover:bg-red-500/10 rounded-lg transition-colors"
+                  title="Delete category"
+                >
+                  <Trash2 className="w-4 h-4" />
+                </button>
               </div>
             ))}
 
