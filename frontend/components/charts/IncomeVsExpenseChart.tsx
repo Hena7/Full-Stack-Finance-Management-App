@@ -81,7 +81,10 @@ export function IncomeVsExpenseChart({
               tickFormatter={(value) => `$${value}`}
             />
             <Tooltip
-              formatter={(value: number) => [`$${value}`, "Amount"]}
+              formatter={(value: any) => [
+                `$${Number(value).toLocaleString()}`,
+                "Amount",
+              ]}
               cursor={{ fill: "#334155", opacity: 0.4 }}
               contentStyle={{
                 backgroundColor: "#1e293b",

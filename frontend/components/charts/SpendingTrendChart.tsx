@@ -89,7 +89,10 @@ export function SpendingTrendChart({ transactions }: SpendingTrendChartProps) {
                   borderColor: "#334155",
                   color: "#f1f5f9",
                 }}
-                formatter={(value: number) => [`$${value}`, "Spent"]}
+                formatter={(value: any) => [
+                  value ? `$${Number(value).toLocaleString()}` : "$0",
+                  "Amount",
+                ]}
               />
               <Area
                 type="monotone"
