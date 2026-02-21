@@ -22,8 +22,9 @@ export function ExpensesPieChart({ transactions }: ExpensesPieChartProps) {
     const categoryTotals: Record<string, number> = {};
 
     expenses.forEach((t) => {
-      categoryTotals[t.category] =
-        (categoryTotals[t.category] || 0) + Number(t.amount);
+      const category = t.category || "Uncategorized";
+      categoryTotals[category] =
+        (categoryTotals[category] || 0) + Number(t.amount);
     });
 
     return Object.entries(categoryTotals)
@@ -72,8 +73,8 @@ export function ExpensesPieChart({ transactions }: ExpensesPieChartProps) {
                 ))}
               </Pie>
               <Tooltip
-                formatter={(value: number) => [
-                  value ? `$${value}` : "$0",
+                formatter={(value: any) => [
+                  value ? `$${Number(value).toLocaleString()}` : "$0",
                   "Amount",
                 ]}
                 contentStyle={{
