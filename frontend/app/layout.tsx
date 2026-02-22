@@ -7,6 +7,10 @@ export const metadata: Metadata = {
   title: "BudgetWise - Personal Finance Tracker",
   description:
     "Track your income, expenses, and financial goals with AI-powered insights",
+  icons: {
+    icon: "/icon.svg",
+    apple: "/icon.svg",
+  },
 };
 
 export default function RootLayout({
