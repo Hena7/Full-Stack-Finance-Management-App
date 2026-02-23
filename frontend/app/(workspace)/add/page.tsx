@@ -1,171 +1,193 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { useFinance } from "@/lib/context/FinanceContext";
-import { Card } from "@/components/Card";
-import { Button } from "@/components/Button";
-import { Category, TransactionType } from "@/lib/types";
+import { useTransactions } from "@/hooks/useTransactions";
+import { useCategories } from "@/hooks/useCategories";
+import { Card } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Select } from "@/components/ui/select";
+import { Textarea } from "@/components/ui/textarea";
 import { CheckCircle, X } from "lucide-react";
 
 export default function AddTransaction() {
   const router = useRouter();
-  const { addTransaction } = useFinance();
+  const { addTransaction, isSubmitting } = useTransactions();
+  const {
+    incomeCategories,
+    expenseCategories,
+    isLoading: categoriesLoading,
+  } = useCategories();
 
   const [formData, setFormData] = useState({
     amount: "",
-    category: Category.FOOD,
+    categoryId: "",
     date: new Date().toISOString().split("T")[0],
-    notes: "",
-    type: TransactionType.EXPENSE,
+    description: "",
+    type: "expense" as "income" | "expense",
   });
 
   const [showSuccess, setShowSuccess] = useState(false);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  // Set default category when type changes or categories load
+  useEffect(() => {
+    const categories =
+      formData.type === "income" ? incomeCategories : expenseCategories;
+    if (categories.length > 0 && !formData.categoryId) {
+      setFormData((prev) => ({
+        ...prev,
+        categoryId: String(categories[0].id),
+      }));
+    }
+  }, [formData.type, incomeCategories, expenseCategories, formData.categoryId]);
+
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!formData.amount) return;
+    if (!formData.amount || !formData.categoryId) return;
 
-    addTransaction({
-      amount: parseFloat(formData.amount),
-      category: formData.category,
-      date: formData.date,
-      notes: formData.notes,
-      type: formData.type,
-    });
+    try {
+      await addTransaction({
+        amount: parseFloat(formData.amount),
+        categoryId: parseInt(formData.categoryId),
+        date: formData.date,
+        description: formData.description,
+        type: formData.type,
+      });
 
-    setShowSuccess(true);
-    setTimeout(() => {
-      router.push("/transactions");
-    }, 1500);
+      setShowSuccess(true);
+      setTimeout(() => {
+        router.push("/transactions");
+      }, 1500);
+    } catch (err) {
+      console.error("Failed to add transaction:", err);
+    }
   };
 
   if (showSuccess) {
     return (
       <div className="flex flex-col items-center justify-center min-h-[50vh] animate-fade-in">
-        <CheckCircle size={64} className="text-teal-500 mb-4" />
+        <CheckCircle size={64} className="text-emerald-500 mb-4" />
         <h2 className="text-2xl font-bold mb-2">Transaction Added!</h2>
-        <p className="text-slate-500">Redirecting to list...</p>
+        <p className="text-slate-500">Redirecting to history...</p>
       </div>
     );
   }
 
+  const currentCategories =
+    formData.type === "income" ? incomeCategories : expenseCategories;
+
   return (
-    <div className="max-w-2xl mx-auto animate-fade-in">
+    <div className="max-w-2xl mx-auto animate-fade-in-up">
       <div className="flex justify-between items-center mb-6">
         <h2 className="text-2xl font-bold">Add Transaction</h2>
         <button
           onClick={() => router.back()}
-          className="p-2 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-full"
+          className="p-2 hover:bg-slate-800 rounded-full transition-colors"
         >
           <X size={24} />
         </button>
       </div>
 
-      <Card>
+      <Card className="p-6 bg-slate-900 border-slate-800">
         <form onSubmit={handleSubmit} className="space-y-6">
           {/* Type Toggle */}
-          <div className="flex p-1 bg-slate-100 dark:bg-slate-900 rounded-lg">
+          <div className="flex p-1 bg-slate-950 rounded-lg border border-slate-800">
             <button
               type="button"
               onClick={() =>
-                setFormData({ ...formData, type: TransactionType.EXPENSE })
+                setFormData({
+                  ...formData,
+                  type: "expense",
+                  categoryId: expenseCategories[0]?.id.toString() || "",
+                })
               }
-              className={`flex-1 py-2 text-sm font-medium rounded-md transition-all ${formData.type === TransactionType.EXPENSE ? "bg-white dark:bg-slate-700 shadow-sm text-slate-900 dark:text-white" : "text-slate-500"}`}
+              className={`flex-1 py-2 text-sm font-medium rounded-md transition-all ${
+                formData.type === "expense"
+                  ? "bg-slate-800 shadow-sm text-white"
+                  : "text-slate-500 hover:text-slate-400"
+              }`}
             >
               Expense
             </button>
             <button
               type="button"
               onClick={() =>
-                setFormData({ ...formData, type: TransactionType.INCOME })
+                setFormData({
+                  ...formData,
+                  type: "income",
+                  categoryId: incomeCategories[0]?.id.toString() || "",
+                })
               }
-              className={`flex-1 py-2 text-sm font-medium rounded-md transition-all ${formData.type === TransactionType.INCOME ? "bg-white dark:bg-slate-700 shadow-sm text-slate-900 dark:text-white" : "text-slate-500"}`}
+              className={`flex-1 py-2 text-sm font-medium rounded-md transition-all ${
+                formData.type === "income"
+                  ? "bg-slate-800 shadow-sm text-white"
+                  : "text-slate-400"
+              }`}
             >
               Income
             </button>
           </div>
 
-          <div>
-            <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">
-              Amount
-            </label>
-            <div className="relative">
-              <span className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-500">
-                $
-              </span>
-              <input
-                type="number"
-                required
-                min="0.01"
-                step="0.01"
-                value={formData.amount}
-                onChange={(e) =>
-                  setFormData({ ...formData, amount: e.target.value })
-                }
-                className="w-full pl-8 pr-4 py-3 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500 dark:text-white text-lg"
-                placeholder="0.00"
-              />
-            </div>
-          </div>
+          <Input
+            label="Amount"
+            type="number"
+            required
+            min="0.01"
+            step="0.01"
+            value={formData.amount}
+            onChange={(e) =>
+              setFormData({ ...formData, amount: e.target.value })
+            }
+            placeholder="0.00"
+            className="text-lg"
+          />
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div>
-              <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">
-                Category
-              </label>
-              <select
-                value={formData.category}
-                onChange={(e) =>
-                  setFormData({
-                    ...formData,
-                    category: e.target.value as Category,
-                  })
-                }
-                className="w-full px-4 py-3 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500 dark:text-white cursor-pointer"
-              >
-                {Object.values(Category).map((c) => (
-                  <option key={c} value={c}>
-                    {c}
-                  </option>
-                ))}
-              </select>
-            </div>
-
-            <div>
-              <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">
-                Date
-              </label>
-              <input
-                type="date"
-                required
-                value={formData.date}
-                onChange={(e) =>
-                  setFormData({ ...formData, date: e.target.value })
-                }
-                className="w-full px-4 py-3 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500 dark:text-white"
-              />
-            </div>
-          </div>
-
-          <div>
-            <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">
-              Notes
-            </label>
-            <textarea
-              rows={3}
-              value={formData.notes}
+            <Select
+              label="Category"
+              value={formData.categoryId}
               onChange={(e) =>
-                setFormData({ ...formData, notes: e.target.value })
+                setFormData({ ...formData, categoryId: e.target.value })
               }
-              className="w-full px-4 py-3 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500 dark:text-white resize-none"
-              placeholder="What was this for?"
+              options={currentCategories.map((c) => ({
+                label: c.name,
+                value: String(c.id),
+              }))}
+              disabled={categoriesLoading}
+              placeholder={categoriesLoading ? "Loading..." : "Select category"}
+            />
+
+            <Input
+              label="Date"
+              type="date"
+              required
+              value={formData.date}
+              onChange={(e) =>
+                setFormData({ ...formData, date: e.target.value })
+              }
             />
           </div>
 
+          <Textarea
+            label="Description (Notes)"
+            rows={3}
+            value={formData.description}
+            onChange={(e) =>
+              setFormData({ ...formData, description: e.target.value })
+            }
+            placeholder="What was this for?"
+          />
+
           <div className="pt-2">
-            <Button type="submit" fullWidth className="py-3 text-lg">
-              Add Transaction
+            <Button
+              type="submit"
+              className="w-full py-4 text-lg"
+              variant="success"
+              isLoading={isSubmitting}
+              disabled={categoriesLoading || currentCategories.length === 0}
+            >
+              Add {formData.type === "income" ? "Income" : "Expense"}
             </Button>
           </div>
         </form>

@@ -1,18 +1,14 @@
 "use client";
 
 import React, { createContext, useState, useEffect, useContext } from "react";
-import { Transaction, UserSettings, TransactionType } from "@/lib/types";
-import { INITIAL_TRANSACTIONS } from "@/lib/services/mockData";
+import { UserSettings } from "@/lib/types";
 import { useAuth } from "@/context/AuthContext";
 
 interface FinanceContextType {
-  transactions: Transaction[];
-  addTransaction: (t: Omit<Transaction, "id">) => void;
   userSettings: UserSettings;
   toggleDarkMode: () => void;
   toggleNotifications: () => void;
   isAuthenticated: boolean;
-  login: (email: string) => void;
   logout: () => void;
 }
 
@@ -27,14 +23,12 @@ export const FinanceProvider: React.FC<{ children: React.ReactNode }> = ({
 }) => {
   const { currentUser, isAuthenticated, logout: authLogout } = useAuth();
 
-  const [transactions, setTransactions] =
-    useState<Transaction[]>(INITIAL_TRANSACTIONS);
   const [userSettings, setUserSettings] = useState<UserSettings>({
     currency: "$",
     darkMode: true,
     notifications: true,
-    name: "Guest User",
-    email: "guest@example.com",
+    name: "User",
+    email: "",
   });
 
   // Sync with Auth Context
@@ -57,15 +51,6 @@ export const FinanceProvider: React.FC<{ children: React.ReactNode }> = ({
     }
   }, [userSettings.darkMode]);
 
-  // Actions
-  const addTransaction = (t: Omit<Transaction, "id">) => {
-    const newTransaction: Transaction = {
-      ...t,
-      id: Math.random().toString(36).substr(2, 9),
-    };
-    setTransactions((prev) => [newTransaction, ...prev]);
-  };
-
   const toggleDarkMode = () => {
     setUserSettings((prev) => ({ ...prev, darkMode: !prev.darkMode }));
   };
@@ -77,11 +62,6 @@ export const FinanceProvider: React.FC<{ children: React.ReactNode }> = ({
     }));
   };
 
-  // Deprecated: Login is handled by AuthContext now, but keeping for compatibility if utilized elsewhere
-  const login = (email: string) => {
-    console.warn("Login should be handled via AuthContext");
-  };
-
   const logout = () => {
     authLogout();
   };
@@ -89,13 +69,10 @@ export const FinanceProvider: React.FC<{ children: React.ReactNode }> = ({
   return (
     <FinanceContext.Provider
       value={{
-        transactions,
-        addTransaction,
         userSettings,
         toggleDarkMode,
         toggleNotifications,
         isAuthenticated,
-        login,
         logout,
       }}
     >
