@@ -8,6 +8,7 @@ import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Modal } from "@/components/ui/modal";
 import { Plus } from "lucide-react";
+import { LoadingOverlay } from "@/components/ui/loading-spinner";
 
 export default function ExpensesPage() {
   const {
@@ -18,6 +19,8 @@ export default function ExpensesPage() {
     getTransactionsByType,
     totalExpense,
     monthlyExpense,
+    isLoading,
+    isSubmitting,
   } = useTransactions();
 
   const [showAddModal, setShowAddModal] = useState(false);
@@ -72,8 +75,17 @@ export default function ExpensesPage() {
     }).format(value);
   };
 
+  if (isLoading && transactions.length === 0) {
+    return (
+      <div className="flex items-center justify-center min-h-[400px]">
+        <LoadingOverlay />
+      </div>
+    );
+  }
+
   return (
     <div className="space-y-6">
+      {isSubmitting && <LoadingOverlay />}
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-3xl font-bold text-slate-100 mb-2">

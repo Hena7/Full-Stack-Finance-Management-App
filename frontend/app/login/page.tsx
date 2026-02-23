@@ -75,9 +75,9 @@ export default function Login() {
               type="submit"
               className="w-full py-3"
               variant="success"
-              disabled={loading}
+              isLoading={loading}
             >
-              {loading ? "Logging in..." : "Login"}
+              Login
             </Button>
           </form>
           <div className="mt-6 text-center text-sm text-slate-400">

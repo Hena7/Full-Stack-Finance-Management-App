@@ -15,6 +15,7 @@ interface AuthContextType {
   currentUser: User | null;
   isAuthenticated: boolean;
   isLoading: boolean;
+  isSubmitting: boolean;
   register: (name: string, email: string, password: string) => Promise<void>;
   login: (email: string, password: string) => Promise<void>;
   logout: () => void;
@@ -25,6 +26,7 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [currentUser, setCurrentUser] = useState<User | null>(null);
   const [isLoading, setIsLoading] = useState(true);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   // On app start: check if token + user exists in localStorage
   useEffect(() => {
@@ -42,22 +44,32 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     email: string,
     password: string,
   ): Promise<void> => {
-    await AuthApiService.register(name, email, password);
-    // After registration, immediately login to get the token
-    await login(email, password);
+    setIsSubmitting(true);
+    try {
+      await AuthApiService.register(name, email, password);
+      // After registration, immediately login to get the token
+      await login(email, password);
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   // Login: call Spring Boot /api/auth/login, save token
   const login = async (email: string, password: string): Promise<void> => {
-    const response = await AuthApiService.login(email, password);
+    setIsSubmitting(true);
+    try {
+      const response = await AuthApiService.login(email, password);
 
-    // Save the JWT token (axios interceptor will use it)
-    localStorage.setItem(TOKEN_KEY, response.token);
+      // Save the JWT token (axios interceptor will use it)
+      localStorage.setItem(TOKEN_KEY, response.token);
 
-    // Save user info locally (Backend token contains email via JWT claims)
-    const user: User = { email, name: email.split("@")[0] }; // Use email prefix as name fallback
-    localStorage.setItem(CURRENT_USER_KEY, JSON.stringify(user));
-    setCurrentUser(user);
+      // Save user info locally (Backend token contains email via JWT claims)
+      const user: User = { email, name: email.split("@")[0] }; // Use email prefix as name fallback
+      localStorage.setItem(CURRENT_USER_KEY, JSON.stringify(user));
+      setCurrentUser(user);
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   // Logout: remove token and user from localStorage
@@ -73,6 +85,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         currentUser,
         isAuthenticated: !!currentUser,
         isLoading,
+        isSubmitting,
         register,
         login,
         logout,

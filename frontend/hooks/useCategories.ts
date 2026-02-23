@@ -20,6 +20,7 @@ export function useCategories() {
   const { isAuthenticated } = useAuth();
   const [categories, setCategories] = useState<Category[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   // Map Backend category (INCOME/EXPENSE) to Frontend category (income/expense)
   const mapToFrontend = (cat: BackendCategory): Category => ({
@@ -55,17 +56,27 @@ export function useCategories() {
     name: string,
     type: CategoryType,
   ): Promise<Category> => {
-    const backendType = type.toUpperCase() as "INCOME" | "EXPENSE";
-    const created = await CategoryService.create(name, backendType);
-    const mapped = mapToFrontend(created);
-    setCategories((prev) => [...prev, mapped]);
-    return mapped;
+    setIsSubmitting(true);
+    try {
+      const backendType = type.toUpperCase() as "INCOME" | "EXPENSE";
+      const created = await CategoryService.create(name, backendType);
+      const mapped = mapToFrontend(created);
+      setCategories((prev) => [...prev, mapped]);
+      return mapped;
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   // Delete a category
   const deleteCategory = async (id: number): Promise<void> => {
-    await CategoryService.delete(id);
-    setCategories((prev) => prev.filter((c) => c.id !== id));
+    setIsSubmitting(true);
+    try {
+      await CategoryService.delete(id);
+      setCategories((prev) => prev.filter((c) => c.id !== id));
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   // Filter categories by type (income | expense)
@@ -85,6 +96,7 @@ export function useCategories() {
   return {
     categories,
     isLoading,
+    isSubmitting,
     addCategory,
     deleteCategory,
     getCategoriesByType,

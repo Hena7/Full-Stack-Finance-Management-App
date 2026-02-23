@@ -18,6 +18,7 @@ export function useTransactions() {
   const { isAuthenticated } = useAuth();
   const [transactions, setTransactions] = useState<Transaction[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
   // Load transactions from API
@@ -46,6 +47,7 @@ export function useTransactions() {
   }, [isAuthenticated, refreshTransactions]);
 
   const addTransaction = async (data: any) => {
+    setIsSubmitting(true);
     try {
       const newTx = await TransactionService.create(data);
       // Optimistic update or refetch
@@ -54,6 +56,8 @@ export function useTransactions() {
     } catch (err: any) {
       console.error("Add failed:", err);
       throw err;
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -62,6 +66,7 @@ export function useTransactions() {
     type: TransactionType,
     updates: any,
   ) => {
+    setIsSubmitting(true);
     try {
       const updatedTx = await TransactionService.update(id, type, updates);
       setTransactions((prev) =>
@@ -70,16 +75,21 @@ export function useTransactions() {
     } catch (err: any) {
       console.error("Update failed:", err);
       throw err;
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
   const deleteTransaction = async (id: string, type: TransactionType) => {
+    setIsSubmitting(true);
     try {
       await TransactionService.delete(id, type);
       setTransactions((prev) => prev.filter((t) => t.id !== id));
     } catch (err: any) {
       console.error("Delete failed:", err);
       throw err;
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -146,6 +156,7 @@ export function useTransactions() {
   return {
     transactions,
     isLoading,
+    isSubmitting,
     error,
     refreshTransactions,
     addTransaction,

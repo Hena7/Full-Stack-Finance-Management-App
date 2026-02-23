@@ -114,9 +114,9 @@ export default function Signup() {
                 type="submit"
                 className="w-full py-3"
                 variant="success"
-                disabled={loading}
+                isLoading={loading}
               >
-                {loading ? "Creating Account..." : "Create Account"}
+                Create Account
               </Button>
             </div>
           </form>

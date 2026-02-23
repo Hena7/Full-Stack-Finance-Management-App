@@ -41,21 +41,40 @@ const buttonVariants = cva(
   },
 );
 
+import { LoadingSpinner } from "./loading-spinner";
+
 export interface ButtonProps
   extends
     React.ButtonHTMLAttributes<HTMLButtonElement>,
     VariantProps<typeof buttonVariants> {
   asChild?: boolean;
+  isLoading?: boolean;
 }
 
 const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
-  ({ className, variant, size, asChild = false, ...props }, ref) => {
+  (
+    {
+      className,
+      variant,
+      size,
+      asChild = false,
+      isLoading,
+      children,
+      disabled,
+      ...props
+    },
+    ref,
+  ) => {
     return (
       <button
         className={cn(buttonVariants({ variant, size, className }))}
         ref={ref}
+        disabled={isLoading || disabled}
         {...props}
-      />
+      >
+        {isLoading && <LoadingSpinner size={18} className="mr-2" />}
+        {children}
+      </button>
     );
   },
 );

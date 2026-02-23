@@ -187,10 +187,9 @@ export function TransactionForm({
           type="submit"
           variant="primary"
           className="w-full"
-          disabled={loading}
+          isLoading={loading}
         >
-          {loading ? "Saving..." : isEdit ? "Update" : "Add"}{" "}
-          {type === "income" ? "Income" : "Expense"}
+          {isEdit ? "Update" : "Add"} {type === "income" ? "Income" : "Expense"}
         </Button>
 
         {(isEdit || showCancel) && (

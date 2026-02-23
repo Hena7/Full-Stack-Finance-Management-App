@@ -7,10 +7,17 @@ import { Button } from "@/components/ui/button";
 import { Modal } from "@/components/ui/modal";
 import { Input } from "@/components/ui/input";
 import { Plus, Trash2, TrendingUp, TrendingDown } from "lucide-react";
+import { LoadingOverlay } from "@/components/ui/loading-spinner";
 
 export default function CategoriesPage() {
-  const { incomeCategories, expenseCategories, addCategory, deleteCategory } =
-    useCategories();
+  const {
+    incomeCategories,
+    expenseCategories,
+    addCategory,
+    deleteCategory,
+    isLoading,
+    isSubmitting,
+  } = useCategories();
 
   const [showAddIncome, setShowAddIncome] = useState(false);
   const [showAddExpense, setShowAddExpense] = useState(false);
@@ -53,8 +60,21 @@ export default function CategoriesPage() {
     }
   };
 
+  if (
+    isLoading &&
+    incomeCategories.length === 0 &&
+    expenseCategories.length === 0
+  ) {
+    return (
+      <div className="flex items-center justify-center min-h-[400px]">
+        <LoadingOverlay />
+      </div>
+    );
+  }
+
   return (
     <div className="space-y-6">
+      {isSubmitting && <LoadingOverlay />}
       <div className="mb-6">
         <h1 className="text-3xl font-bold text-slate-100 mb-2">
           Category Management
@@ -180,7 +200,12 @@ export default function CategoriesPage() {
             placeholder="Enter category name"
             required
           />
-          <Button type="submit" variant="success" className="w-full">
+          <Button
+            type="submit"
+            variant="success"
+            className="w-full"
+            isLoading={isSubmitting}
+          >
             Add Category
           </Button>
         </form>
@@ -200,7 +225,12 @@ export default function CategoriesPage() {
             placeholder="Enter category name"
             required
           />
-          <Button type="submit" variant="danger" className="w-full">
+          <Button
+            type="submit"
+            variant="danger"
+            className="w-full"
+            isLoading={isSubmitting}
+          >
             Add Category
           </Button>
         </form>

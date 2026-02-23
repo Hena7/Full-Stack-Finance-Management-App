@@ -1,8 +1,11 @@
 import React from "react";
 
+import { LoadingSpinner } from "./ui/loading-spinner";
+
 interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   variant?: "primary" | "secondary" | "danger" | "ghost";
   fullWidth?: boolean;
+  isLoading?: boolean;
 }
 
 export const Button: React.FC<ButtonProps> = ({
@@ -10,10 +13,12 @@ export const Button: React.FC<ButtonProps> = ({
   variant = "primary",
   fullWidth = false,
   className = "",
+  isLoading = false,
+  disabled,
   ...props
 }) => {
   const baseStyles =
-    "font-medium rounded-md px-4 py-2 transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-slate-900";
+    "font-medium rounded-md px-4 py-2 transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-slate-900 flex items-center justify-center";
 
   const variants = {
     primary: "bg-teal-500 hover:bg-teal-600 text-slate-900 focus:ring-teal-500",
@@ -27,8 +32,10 @@ export const Button: React.FC<ButtonProps> = ({
   return (
     <button
       className={`${baseStyles} ${variants[variant]} ${fullWidth ? "w-full" : ""} ${className}`}
+      disabled={isLoading || disabled}
       {...props}
     >
+      {isLoading && <LoadingSpinner size={18} className="mr-2" />}
       {children}
     </button>
   );
