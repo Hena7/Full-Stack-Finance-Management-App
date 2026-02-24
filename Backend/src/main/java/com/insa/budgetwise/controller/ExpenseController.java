@@ -31,4 +31,10 @@ public class ExpenseController {
         expenseService.deleteExpense(id, authentication.getName());
         return ResponseEntity.ok("Expense deleted successfully!");
     }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<Expense> updateExpense(@PathVariable Long id, @RequestBody ExpenseRequest request,
+            Authentication authentication) {
+        return ResponseEntity.ok(expenseService.updateExpense(id, request, authentication.getName()));
+    }
 }

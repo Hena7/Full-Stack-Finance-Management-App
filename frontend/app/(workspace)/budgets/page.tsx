@@ -9,10 +9,17 @@ import { Select } from "@/components/ui/select";
 import { Button } from "@/components/ui/button";
 import { BudgetCard } from "@/components/budget/BudgetCard";
 import { AlertCircle } from "lucide-react";
+import { LoadingOverlay } from "@/components/ui/loading-spinner";
 
 export default function BudgetsPage() {
   const { expenseCategories } = useCategories();
-  const { setBudget, getCurrentMonthBudgets, calculateSpent } = useBudget();
+  const {
+    setBudget,
+    getCurrentMonthBudgets,
+    calculateSpent,
+    isLoading,
+    deleteBudget,
+  } = useBudget();
 
   const currentDate = new Date();
   const currentMonthBudgets = getCurrentMonthBudgets();
@@ -25,7 +32,7 @@ export default function BudgetsPage() {
   }, []);
 
   const [budgetForm, setBudgetForm] = useState({
-    category: "",
+    categoryId: "",
     amount: "",
     month: currentDate.getMonth().toString(),
     year: currentDate.getFullYear().toString(),
@@ -46,21 +53,33 @@ export default function BudgetsPage() {
     { value: 11, label: "December" },
   ];
 
-  const handleSetBudget = (e: React.FormEvent) => {
+  const handleSetBudget = async (e: React.FormEvent) => {
     e.preventDefault();
-    setBudget(
-      budgetForm.category,
-      parseInt(budgetForm.month),
-      parseInt(budgetForm.year),
-      parseFloat(budgetForm.amount),
-    );
-
-    // Reset minimal parts of form
-    setBudgetForm((prev) => ({ ...prev, category: "", amount: "" }));
+    try {
+      await setBudget(
+        parseInt(budgetForm.categoryId),
+        parseInt(budgetForm.month),
+        parseInt(budgetForm.year),
+        parseFloat(budgetForm.amount),
+      );
+      // Reset minimal parts of form
+      setBudgetForm((prev) => ({ ...prev, categoryId: "", amount: "" }));
+    } catch (err) {
+      console.error("Failed to set budget", err);
+    }
   };
+
+  if (isLoading && currentMonthBudgets.length === 0) {
+    return (
+      <div className="flex items-center justify-center min-h-[400px]">
+        <LoadingOverlay />
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-6">
+      {isLoading && <LoadingOverlay />}
       <div className="mb-6">
         <h1 className="text-3xl font-bold text-slate-100 mb-2">
           Budget Planning
@@ -83,13 +102,13 @@ export default function BudgetsPage() {
             label="Category"
             options={expenseCategories.map((c) => ({
               label: c.name,
-              value: c.name,
+              value: c.id.toString(),
             }))}
             placeholder="Select category"
             required
-            value={budgetForm.category}
+            value={budgetForm.categoryId}
             onChange={(e) =>
-              setBudgetForm({ ...budgetForm, category: e.target.value })
+              setBudgetForm({ ...budgetForm, categoryId: e.target.value })
             }
           />
 
@@ -116,7 +135,12 @@ export default function BudgetsPage() {
             }
           />
 
-          <Button type="submit" variant="primary" className="w-full">
+          <Button
+            type="submit"
+            variant="primary"
+            className="w-full"
+            isLoading={isLoading}
+          >
             Set Budget
           </Button>
         </form>
@@ -132,6 +156,7 @@ export default function BudgetsPage() {
             {currentMonthBudgets.map((budget) => (
               <BudgetCard
                 key={budget.id}
+                id={budget.id}
                 category={budget.category}
                 budget={budget.amount}
                 spent={calculateSpent(
@@ -141,6 +166,7 @@ export default function BudgetsPage() {
                 )}
                 month={budget.month}
                 year={budget.year}
+                onDelete={deleteBudget}
               />
             ))}
           </div>

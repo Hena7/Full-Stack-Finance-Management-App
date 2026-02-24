@@ -1,99 +1,132 @@
 "use client";
 
 import { useAuth } from "@/context/AuthContext";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { useTransactions } from "./useTransactions";
+import {
+  BudgetService,
+  Budget as ApiBudget,
+} from "@/lib/services/budgetService";
 
 export interface Budget {
   id: string;
   category: string;
+  categoryId: number;
   month: number;
   year: number;
   amount: number;
-  createdAt: string;
-  updatedAt?: string;
 }
 
 export function useBudget() {
-  const { currentUser } = useAuth();
+  const { isAuthenticated } = useAuth();
   const { transactions } = useTransactions();
   const [budgets, setBudgets] = useState<Budget[]>([]);
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
-  const getStorageKey = (email: string) => `budgetwise_budgets_${email}`;
-
-  // Load budgets
-  useEffect(() => {
-    if (!currentUser) {
-      setBudgets([]);
-      return;
+  const refreshBudgets = useCallback(async () => {
+    if (!isAuthenticated) return;
+    setIsLoading(true);
+    setError(null);
+    try {
+      const data = await BudgetService.getAll();
+      const mappedBudgets: Budget[] = data.map((b: ApiBudget) => ({
+        id: b.id.toString(),
+        category: b.category.name,
+        categoryId: b.category.id,
+        month: b.month - 1, // Store 0-indexed month internally to match JS Date and existing frontend logic
+        year: b.year,
+        amount: b.amount,
+      }));
+      setBudgets(mappedBudgets);
+    } catch (err: any) {
+      console.error("Failed to fetch budgets:", err);
+      setError("Failed to load budgets.");
+    } finally {
+      setIsLoading(false);
     }
+  }, [isAuthenticated]);
 
-    const key = getStorageKey(currentUser.email); // Use email instead of id
-    const data = localStorage.getItem(key);
-
-    if (data) {
-      setBudgets(JSON.parse(data));
+  useEffect(() => {
+    if (isAuthenticated) {
+      refreshBudgets();
     } else {
       setBudgets([]);
     }
-  }, [currentUser]);
+  }, [isAuthenticated, refreshBudgets]);
 
-  const saveBudgets = (newBudgets: Budget[]) => {
-    if (!currentUser) return;
-    const key = getStorageKey(currentUser.email); // Use email instead of id
-    localStorage.setItem(key, JSON.stringify(newBudgets));
-    setBudgets(newBudgets);
-  };
-
-  const setBudget = (
-    category: string,
-    month: number,
+  const setBudget = async (
+    categoryId: number,
+    month: number, // 0-indexed
     year: number,
     amount: number,
   ) => {
-    const existingIndex = budgets.findIndex(
-      (b) => b.category === category && b.month === month && b.year === year,
-    );
+    setIsLoading(true);
+    try {
+      const apiMonth = month + 1; // Backend expects 1-indexed
+      const existing = budgets.find(
+        (b) =>
+          b.categoryId === categoryId && b.month === month && b.year === year,
+      );
 
-    let newBudgets = [...budgets];
-
-    if (existingIndex >= 0) {
-      newBudgets[existingIndex] = {
-        ...newBudgets[existingIndex],
-        amount: Number(amount),
-        updatedAt: new Date().toISOString(),
-      };
-    } else {
-      newBudgets.push({
-        id: Date.now().toString(),
-        category,
-        month,
-        year,
-        amount: Number(amount),
-        createdAt: new Date().toISOString(),
-      });
+      if (existing) {
+        await BudgetService.update(existing.id, {
+          amount,
+          categoryId,
+          month: apiMonth,
+          year,
+        });
+      } else {
+        await BudgetService.create({
+          amount,
+          categoryId,
+          month: apiMonth,
+          year,
+        });
+      }
+      await refreshBudgets();
+    } catch (err: any) {
+      console.error("Set budget failed:", err);
+      throw err;
+    } finally {
+      setIsLoading(false);
     }
+  };
 
-    saveBudgets(newBudgets);
+  const deleteBudget = async (id: string) => {
+    setIsLoading(true);
+    try {
+      await BudgetService.delete(id);
+      setBudgets((prev) => prev.filter((b) => b.id !== id));
+    } catch (err: any) {
+      console.error("Delete budget failed:", err);
+      throw err;
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   const getBudgetByCategory = (
-    category: string,
+    categoryName: string,
     month: number,
     year: number,
   ) => {
     return budgets.find(
-      (b) => b.category === category && b.month === month && b.year === year,
+      (b) =>
+        b.category === categoryName && b.month === month && b.year === year,
     );
   };
 
-  const calculateSpent = (category: string, month: number, year: number) => {
-    // Use transactions directly and filter manually
+  const calculateSpent = (
+    categoryName: string,
+    month: number,
+    year: number,
+  ) => {
     const categoryTransactions = transactions.filter((t) => {
       const date = new Date(t.date);
       return (
         t.type === "expense" &&
-        t.category === category &&
+        t.category === categoryName &&
         date.getMonth() === month &&
         date.getFullYear() === year
       );
@@ -102,37 +135,32 @@ export function useBudget() {
   };
 
   const calculateRemaining = (
-    category: string,
+    categoryName: string,
     month: number,
     year: number,
   ) => {
-    const budget = getBudgetByCategory(category, month, year);
+    const budget = getBudgetByCategory(categoryName, month, year);
     if (!budget) return 0;
 
-    const spent = calculateSpent(category, month, year);
+    const spent = calculateSpent(categoryName, month, year);
     return budget.amount - spent;
   };
 
-  const isOverBudget = (category: string, month: number, year: number) => {
-    const remaining = calculateRemaining(category, month, year);
+  const isOverBudget = (categoryName: string, month: number, year: number) => {
+    const remaining = calculateRemaining(categoryName, month, year);
     return remaining < 0;
   };
 
   const getSpendingPercentage = (
-    category: string,
+    categoryName: string,
     month: number,
     year: number,
   ) => {
-    const budget = getBudgetByCategory(category, month, year);
+    const budget = getBudgetByCategory(categoryName, month, year);
     if (!budget || budget.amount === 0) return 0;
 
-    const spent = calculateSpent(category, month, year);
+    const spent = calculateSpent(categoryName, month, year);
     return Math.min((spent / budget.amount) * 100, 100);
-  };
-
-  const deleteBudget = (id: string) => {
-    const newBudgets = budgets.filter((b) => b.id !== id);
-    saveBudgets(newBudgets);
   };
 
   const getCurrentMonthBudgets = () => {
@@ -145,6 +173,8 @@ export function useBudget() {
 
   return {
     budgets,
+    isLoading,
+    error,
     setBudget,
     getBudgetByCategory,
     calculateSpent,
@@ -153,5 +183,6 @@ export function useBudget() {
     getSpendingPercentage,
     deleteBudget,
     getCurrentMonthBudgets,
+    refreshBudgets,
   };
 }

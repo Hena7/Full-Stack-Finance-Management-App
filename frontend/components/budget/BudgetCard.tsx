@@ -3,16 +3,25 @@
 import React from "react";
 import { Card } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
+import { Trash2 } from "lucide-react";
 
 interface BudgetCardProps {
+  id: string;
   category: string;
   budget: number;
   spent: number;
   month: number;
   year: number;
+  onDelete?: (id: string) => void;
 }
 
-export function BudgetCard({ category, budget, spent }: BudgetCardProps) {
+export function BudgetCard({
+  id,
+  category,
+  budget,
+  spent,
+  onDelete,
+}: BudgetCardProps) {
   const percentage = Math.min((spent / budget) * 100, 100);
   const isOverBudget = spent > budget;
 
@@ -40,15 +49,25 @@ export function BudgetCard({ category, budget, spent }: BudgetCardProps) {
             {formatCurrency(spent)} spent of {formatCurrency(budget)}
           </p>
         </div>
-        <div
-          className={cn(
-            "px-2 py-1 rounded text-xs font-semibold",
-            isOverBudget
-              ? "bg-red-500/10 text-red-500"
-              : "bg-emerald-500/10 text-emerald-500",
+        <div className="flex items-center gap-2">
+          <div
+            className={cn(
+              "px-2 py-1 rounded text-xs font-semibold",
+              isOverBudget
+                ? "bg-red-500/10 text-red-500"
+                : "bg-emerald-500/10 text-emerald-500",
+            )}
+          >
+            {percentage.toFixed(0)}%
+          </div>
+          {onDelete && (
+            <button
+              onClick={() => onDelete(id)}
+              className="p-1.5 text-slate-500 hover:text-red-500 hover:bg-red-500/10 rounded transition-all"
+            >
+              <Trash2 size={14} />
+            </button>
           )}
-        >
-          {percentage.toFixed(0)}%
         </div>
       </div>
 

@@ -57,4 +57,25 @@ public class IncomeService {
 
         incomeRepository.deleteById(id);
     }
+
+    public Income updateIncome(Long id, IncomeRequest request, String email) {
+        Income income = incomeRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Income not found"));
+
+        if (!income.getUser().getEmail().equals(email)) {
+            throw new SecurityException("You are not authorized to update this income");
+        }
+
+        if (request.getCategoryId() != null) {
+            Category category = categoryRepository.findById(request.getCategoryId())
+                    .orElseThrow(() -> new EntityNotFoundException("Category not found"));
+            income.setCategory(category);
+        }
+
+        income.setAmount(request.getAmount());
+        income.setDescription(request.getDescription());
+        income.setDate(request.getDate());
+
+        return incomeRepository.save(income);
+    }
 }

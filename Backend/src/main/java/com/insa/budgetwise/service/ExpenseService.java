@@ -57,4 +57,25 @@ public class ExpenseService {
 
         expenseRepository.deleteById(id);
     }
+
+    public Expense updateExpense(Long id, ExpenseRequest request, String email) {
+        Expense expense = expenseRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Expense not found"));
+
+        if (!expense.getUser().getEmail().equals(email)) {
+            throw new SecurityException("You are not authorized to update this expense");
+        }
+
+        if (request.getCategoryId() != null) {
+            Category category = categoryRepository.findById(request.getCategoryId())
+                    .orElseThrow(() -> new EntityNotFoundException("Category not found"));
+            expense.setCategory(category);
+        }
+
+        expense.setAmount(request.getAmount());
+        expense.setDescription(request.getDescription());
+        expense.setDate(request.getDate());
+
+        return expenseRepository.save(expense);
+    }
 }
