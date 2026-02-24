@@ -8,13 +8,22 @@ import { Button } from "@/components/ui/button";
 import { Moon, Sun, Bell, Shield, LogOut } from "lucide-react";
 
 export default function Settings() {
-  const { userSettings, toggleDarkMode, toggleNotifications, logout } =
-    useFinance();
+  const {
+    userSettings,
+    toggleDarkMode,
+    toggleNotifications,
+    updateCurrency,
+    logout,
+  } = useFinance();
   const router = useRouter();
 
   const handleLogout = () => {
     logout();
     router.push("/login");
+  };
+
+  const handleCurrencyChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    updateCurrency(e.target.value);
   };
 
   return (
@@ -103,10 +112,13 @@ export default function Settings() {
               <p className="text-sm text-slate-500">Display currency format</p>
             </div>
           </div>
-          <select className="bg-slate-100 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded px-2 py-1 text-sm outline-none focus:ring-1 focus:ring-teal-500">
-            <option>USD ($)</option>
-            <option>EUR (€)</option>
-            <option>GBP (£)</option>
+          <select
+            value={userSettings.currency}
+            onChange={handleCurrencyChange}
+            className="bg-slate-100 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded px-2 py-1 text-sm outline-none focus:ring-1 focus:ring-teal-500"
+          >
+            <option value="ETB">Birr (ETB)</option>
+            <option value="USD">USD ($)</option>
           </select>
         </div>
       </Card>

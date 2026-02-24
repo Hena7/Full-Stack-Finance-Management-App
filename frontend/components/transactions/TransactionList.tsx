@@ -2,6 +2,7 @@
 
 import React, { useMemo } from "react";
 import { Transaction, TransactionType } from "@/hooks/useTransactions";
+import { useFinance } from "@/lib/context/FinanceContext";
 import { Card } from "@/components/ui/card";
 import { Edit, Trash2 } from "lucide-react";
 import { cn } from "@/lib/utils";
@@ -19,6 +20,8 @@ export function TransactionList({
   onEdit,
   onDelete,
 }: TransactionListProps) {
+  const { formatCurrency } = useFinance();
+
   const sortedTransactions = useMemo(() => {
     return [...transactions].sort(
       (a, b) => new Date(b.date).getTime() - new Date(a.date).getTime(),
@@ -33,13 +36,6 @@ export function TransactionList({
       day: "numeric",
       year: "numeric",
     });
-  };
-
-  const formatAmount = (amount: number) => {
-    return new Intl.NumberFormat("en-US", {
-      style: "currency",
-      currency: "USD",
-    }).format(amount);
   };
 
   return (
@@ -62,11 +58,6 @@ export function TransactionList({
                 <th className="text-left py-3 px-4 text-sm font-semibold text-slate-400">
                   Category
                 </th>
-                {/* {type === "expense" && (
-                  <th className="text-left py-3 px-4 text-sm font-semibold text-slate-400">
-                    Payment
-                  </th>
-                )} */}
                 <th className="text-left py-3 px-4 text-sm font-semibold text-slate-400">
                   Note (description)
                 </th>
@@ -92,17 +83,12 @@ export function TransactionList({
                       {transaction.category}
                     </span>
                   </td>
-                  {/* {type === "expense" && (
-                    <td className="py-3 px-4 text-sm text-slate-400">
-                      {transaction.type}
-                    </td>
-                  )} */}
                   <td className="py-3 px-4 text-sm text-slate-400 truncate max-w-xs">
                     {transaction.description || "-"}
                   </td>
                   <td className="py-3 px-4 text-right">
                     <span className={cn("font-semibold", amountClass)}>
-                      {formatAmount(transaction.amount)}
+                      {formatCurrency(transaction.amount)}
                     </span>
                   </td>
                   <td className="py-3 px-4 text-right">

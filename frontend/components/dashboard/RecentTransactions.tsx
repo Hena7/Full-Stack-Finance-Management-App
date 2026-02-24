@@ -2,6 +2,7 @@ import React from "react";
 import Link from "next/link";
 import { Card } from "@/components/ui/card";
 import { Transaction } from "@/hooks/useTransactions";
+import { useFinance } from "@/lib/context/FinanceContext";
 import { TrendingUp, TrendingDown } from "lucide-react";
 import { cn } from "@/lib/utils";
 
@@ -10,20 +11,13 @@ interface RecentTransactionsProps {
 }
 
 export function RecentTransactions({ transactions }: RecentTransactionsProps) {
+  const { formatCurrency } = useFinance();
+
   const formatDate = (dateStr: string) => {
     return new Date(dateStr).toLocaleDateString("en-US", {
       month: "short",
       day: "numeric",
     });
-  };
-
-  const formatAmount = (amount: number) => {
-    return new Intl.NumberFormat("en-US", {
-      style: "currency",
-      currency: "USD",
-      minimumFractionDigits: 0,
-      maximumFractionDigits: 0,
-    }).format(amount);
   };
 
   return (
@@ -89,7 +83,7 @@ export function RecentTransactions({ transactions }: RecentTransactionsProps) {
                     )}
                   >
                     {isIncome ? "+" : "-"}
-                    {formatAmount(transaction.amount)}
+                    {formatCurrency(transaction.amount)}
                   </p>
                 </div>
               </div>

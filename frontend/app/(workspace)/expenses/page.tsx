@@ -2,6 +2,7 @@
 
 import React, { useState } from "react";
 import { useTransactions, Transaction } from "@/hooks/useTransactions";
+import { useFinance } from "@/lib/context/FinanceContext";
 import { TransactionList } from "@/components/transactions/TransactionList";
 import { TransactionForm } from "@/components/transactions/TransactionForm";
 import { Card } from "@/components/ui/card";
@@ -22,6 +23,7 @@ export default function ExpensesPage() {
     isLoading,
     isSubmitting,
   } = useTransactions();
+  const { formatCurrency } = useFinance();
 
   const [showAddModal, setShowAddModal] = useState(false);
   const [showEditModal, setShowEditModal] = useState(false);
@@ -64,15 +66,6 @@ export default function ExpensesPage() {
         console.error("Failed to delete expense", error);
       }
     }
-  };
-
-  const formatCurrency = (value: number) => {
-    return new Intl.NumberFormat("en-US", {
-      style: "currency",
-      currency: "USD",
-      minimumFractionDigits: 0,
-      maximumFractionDigits: 0,
-    }).format(value);
   };
 
   if (isLoading && transactions.length === 0) {

@@ -4,6 +4,7 @@ import React from "react";
 import Link from "next/link";
 import { useAuth } from "@/context/AuthContext";
 import { useTransactions } from "@/hooks/useTransactions";
+import { useFinance } from "@/lib/context/FinanceContext";
 import { StatCard } from "@/components/dashboard/StatCard";
 import { RecentTransactions } from "@/components/dashboard/RecentTransactions";
 import { Card } from "@/components/ui/card";
@@ -25,17 +26,9 @@ export default function DashboardPage() {
     monthlyExpense,
     getRecentTransactions,
   } = useTransactions();
+  const { formatCurrency } = useFinance();
 
   const recentTransactions = getRecentTransactions(5);
-
-  const formatCurrency = (value: number) => {
-    return new Intl.NumberFormat("en-US", {
-      style: "currency",
-      currency: "USD",
-      minimumFractionDigits: 0,
-      maximumFractionDigits: 0,
-    }).format(value);
-  };
 
   const userName = currentUser?.name?.split(" ")[0] || "User";
 

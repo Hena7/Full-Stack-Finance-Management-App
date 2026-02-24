@@ -2,6 +2,7 @@ import React from "react";
 import { Card } from "@/components/ui/card";
 import { LucideIcon } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { useFinance } from "@/lib/context/FinanceContext";
 
 interface StatCardProps {
   label: string;
@@ -16,14 +17,7 @@ export function StatCard({
   icon: Icon,
   variant = "primary",
 }: StatCardProps) {
-  const formatCurrency = (val: number) => {
-    return new Intl.NumberFormat("en-US", {
-      style: "currency",
-      currency: "USD",
-      minimumFractionDigits: 0,
-      maximumFractionDigits: 0,
-    }).format(val);
-  };
+  const { formatCurrency } = useFinance();
 
   const getVariantStyles = () => {
     switch (variant) {
