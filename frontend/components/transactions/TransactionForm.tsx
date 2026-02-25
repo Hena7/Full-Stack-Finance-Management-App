@@ -23,11 +23,12 @@ export function TransactionForm({
   onSubmit,
   onCancel,
 }: TransactionFormProps) {
-  const { getCategoriesByType } = useCategories();
+  const { getCategoriesByType, getOthersCategoryId } = useCategories();
 
-  const categories = getCategoriesByType(type).map((c) => ({
+  const rawCategories = getCategoriesByType(type);
+  const categories = rawCategories.map((c) => ({
     label: c.name,
-    value: c.id.toString(), // Use ID as value, not name
+    value: c.id.toString(),
   }));
 
   const paymentMethods = [
@@ -53,11 +54,17 @@ export function TransactionForm({
 
   useEffect(() => {
     if (transaction) {
+      // If transaction has no categoryId, try to fall back to Others
+      let catId = transaction.categoryId
+        ? transaction.categoryId.toString()
+        : "";
+      if (!catId) {
+        const othersId = getOthersCategoryId(type);
+        if (othersId) catId = othersId.toString();
+      }
       setFormData({
         amount: transaction.amount.toString(),
-        categoryId: transaction.categoryId
-          ? transaction.categoryId.toString()
-          : "",
+        categoryId: catId,
         paymentMethod: "",
         date: transaction.date,
         description: transaction.description || "",
@@ -71,7 +78,7 @@ export function TransactionForm({
         description: "",
       });
     }
-  }, [transaction]);
+  }, [transaction, type]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -82,12 +89,19 @@ export function TransactionForm({
       return;
     }
 
-    if (!formData.categoryId) {
-      setErrors((prev) => ({
-        ...prev,
-        categoryId: "Please select a category",
-      }));
-      return;
+    // If no category selected, auto-assign to Others
+    let categoryId = formData.categoryId;
+    if (!categoryId) {
+      const othersId = getOthersCategoryId(type);
+      if (othersId) {
+        categoryId = othersId.toString();
+      } else {
+        setErrors((prev) => ({
+          ...prev,
+          categoryId: "Please select a category",
+        }));
+        return;
+      }
     }
 
     if (type === "expense" && !formData.paymentMethod) {
@@ -103,8 +117,8 @@ export function TransactionForm({
     try {
       onSubmit({
         amount: Number(formData.amount),
-        categoryId: Number(formData.categoryId), // Send ID to Backend
-        description: formData.description, // Maps to Backend's 'description'
+        categoryId: Number(categoryId), // Send ID to Backend
+        description: formData.description,
         date: formData.date,
         type,
       });

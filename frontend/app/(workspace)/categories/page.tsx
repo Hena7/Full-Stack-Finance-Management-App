@@ -6,7 +6,8 @@ import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Modal } from "@/components/ui/modal";
 import { Input } from "@/components/ui/input";
-import { Plus, Trash2, TrendingUp, TrendingDown } from "lucide-react";
+import { Plus, Trash2, TrendingUp, TrendingDown, Shield } from "lucide-react";
+import { OTHERS_CATEGORY_NAME } from "@/hooks/useCategories";
 import { LoadingOverlay } from "@/components/ui/loading-spinner";
 
 export default function CategoriesPage() {
@@ -115,12 +116,22 @@ export default function CategoriesPage() {
                   <span className="font-medium text-slate-900 dark:text-slate-200">
                     {category.name}
                   </span>
+                  {category.name === OTHERS_CATEGORY_NAME && (
+                    <span className="text-xs px-2 py-0.5 rounded-full bg-blue-500/10 text-blue-500 font-medium flex items-center gap-1">
+                      <Shield className="w-3 h-3" /> Default
+                    </span>
+                  )}
                 </div>
 
                 <button
                   onClick={() => handleDelete(category.id)}
-                  className="p-1.5 text-red-500 hover:bg-red-500/10 rounded-lg transition-colors"
-                  title="Delete category"
+                  disabled={category.name === OTHERS_CATEGORY_NAME}
+                  className="p-1.5 text-red-500 hover:bg-red-500/10 rounded-lg transition-colors disabled:opacity-30 disabled:cursor-not-allowed"
+                  title={
+                    category.name === OTHERS_CATEGORY_NAME
+                      ? "Default category cannot be deleted"
+                      : "Delete category"
+                  }
                 >
                   <Trash2 className="w-4 h-4" />
                 </button>
@@ -167,12 +178,22 @@ export default function CategoriesPage() {
                   <span className="font-medium text-slate-900 dark:text-slate-200">
                     {category.name}
                   </span>
+                  {category.name === OTHERS_CATEGORY_NAME && (
+                    <span className="text-xs px-2 py-0.5 rounded-full bg-blue-500/10 text-blue-500 font-medium flex items-center gap-1">
+                      <Shield className="w-3 h-3" /> Default
+                    </span>
+                  )}
                 </div>
 
                 <button
                   onClick={() => handleDelete(category.id)}
-                  className="p-1.5 text-red-500 hover:bg-red-500/10 rounded-lg transition-colors"
-                  title="Delete category"
+                  disabled={category.name === OTHERS_CATEGORY_NAME}
+                  className="p-1.5 text-red-500 hover:bg-red-500/10 rounded-lg transition-colors disabled:opacity-30 disabled:cursor-not-allowed"
+                  title={
+                    category.name === OTHERS_CATEGORY_NAME
+                      ? "Default category cannot be deleted"
+                      : "Delete category"
+                  }
                 >
                   <Trash2 className="w-4 h-4" />
                 </button>

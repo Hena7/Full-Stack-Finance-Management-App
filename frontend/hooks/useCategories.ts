@@ -16,6 +16,32 @@ export interface Category {
   type: CategoryType; // lowercase for Frontend consistency
 }
 
+// Default categories to seed for new users
+const DEFAULT_INCOME_CATEGORIES = [
+  "Salary",
+  "Freelance",
+  "Business",
+  "Investment",
+  "Gift",
+  "Bonus",
+  "Others",
+];
+
+const DEFAULT_EXPENSE_CATEGORIES = [
+  "Food & Dining",
+  "Transport",
+  "Housing & Rent",
+  "Utilities",
+  "Healthcare",
+  "Education",
+  "Entertainment",
+  "Shopping",
+  "Savings",
+  "Others",
+];
+
+export const OTHERS_CATEGORY_NAME = "Others";
+
 export function useCategories() {
   const { isAuthenticated } = useAuth();
   const [categories, setCategories] = useState<Category[]>([]);
@@ -29,18 +55,48 @@ export function useCategories() {
     type: cat.type.toLowerCase() as CategoryType,
   });
 
+  // Seed default categories for a brand-new user who has none
+  const seedDefaults = useCallback(async () => {
+    const all: Category[] = [];
+    const createAndCollect = async (
+      name: string,
+      type: "INCOME" | "EXPENSE",
+    ) => {
+      try {
+        const created = await CategoryService.create(name, type);
+        all.push(mapToFrontend(created));
+      } catch {
+        // ignore individual failures (e.g. duplicate)
+      }
+    };
+
+    for (const name of DEFAULT_INCOME_CATEGORIES) {
+      await createAndCollect(name, "INCOME");
+    }
+    for (const name of DEFAULT_EXPENSE_CATEGORIES) {
+      await createAndCollect(name, "EXPENSE");
+    }
+    setCategories(all);
+  }, []);
+
   const refreshCategories = useCallback(async () => {
     if (!isAuthenticated) return;
     setIsLoading(true);
     try {
       const data = await CategoryService.getAll();
-      setCategories(data.map(mapToFrontend));
+      const mapped = data.map(mapToFrontend);
+      setCategories(mapped);
+
+      // If the user has no categories at all, seed defaults
+      if (mapped.length === 0) {
+        await seedDefaults();
+      }
     } catch (error) {
       console.error("Failed to fetch categories:", error);
     } finally {
       setIsLoading(false);
     }
-  }, [isAuthenticated]);
+  }, [isAuthenticated, seedDefaults]);
 
   useEffect(() => {
     if (isAuthenticated) {
@@ -68,8 +124,13 @@ export function useCategories() {
     }
   };
 
-  // Delete a category
+  // Delete a category - "Others" is protected and cannot be deleted
   const deleteCategory = async (id: number): Promise<void> => {
+    const cat = categories.find((c) => c.id === id);
+    if (cat?.name === OTHERS_CATEGORY_NAME) {
+      alert('The "Others" category cannot be deleted.');
+      return;
+    }
     setIsSubmitting(true);
     try {
       await CategoryService.delete(id);
@@ -82,6 +143,14 @@ export function useCategories() {
   // Filter categories by type (income | expense)
   const getCategoriesByType = (type: CategoryType): Category[] => {
     return categories.filter((c) => c.type === type);
+  };
+
+  // Get the "Others" category ID for a given type (used as fallback)
+  const getOthersCategoryId = (type: CategoryType): number | null => {
+    const others = categories.find(
+      (c) => c.type === type && c.name === OTHERS_CATEGORY_NAME,
+    );
+    return others?.id ?? null;
   };
 
   const incomeCategories = useMemo(
@@ -100,6 +169,7 @@ export function useCategories() {
     addCategory,
     deleteCategory,
     getCategoriesByType,
+    getOthersCategoryId,
     incomeCategories,
     expenseCategories,
     refreshCategories,
