@@ -2,6 +2,7 @@
 
 import React from "react";
 import { useRouter } from "next/navigation";
+import { cn } from "@/lib/utils";
 import { useFinance } from "@/lib/context/FinanceContext";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -52,70 +53,87 @@ export default function Settings() {
           Preferences
         </h3>
 
+        {/* Dark Mode */}
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-3">
             <div className="p-2 bg-slate-100 dark:bg-slate-700 rounded-lg text-slate-600 dark:text-slate-300">
               {userSettings.darkMode ? <Moon size={20} /> : <Sun size={20} />}
             </div>
             <div>
-              <p className="font-medium text-slate-900 dark:text-white">
+              <p className="font-medium text-slate-900 dark:text-slate-100">
                 Dark Mode
               </p>
-              <p className="text-sm text-slate-500">
-                Use dark theme by default
+              <p className="text-sm text-slate-500 dark:text-slate-400">
+                Switch between dark and light themes
               </p>
             </div>
           </div>
           <button
             onClick={toggleDarkMode}
-            className={`w-12 h-6 rounded-full transition-colors relative ${userSettings.darkMode ? "bg-teal-500" : "bg-slate-300"}`}
+            className={cn(
+              "w-12 h-6 rounded-full transition-colors relative",
+              userSettings.darkMode ? "bg-blue-600" : "bg-slate-300",
+            )}
           >
             <span
-              className={`absolute top-1 w-4 h-4 bg-white rounded-full transition-transform ${userSettings.darkMode ? "left-7" : "left-1"}`}
+              className={cn(
+                "absolute top-1 w-4 h-4 bg-white rounded-full transition-transform",
+                userSettings.darkMode ? "right-1" : "left-1",
+              )}
             />
           </button>
         </div>
 
+        {/* Notifications */}
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-3">
             <div className="p-2 bg-slate-100 dark:bg-slate-700 rounded-lg text-slate-600 dark:text-slate-300">
               <Bell size={20} />
             </div>
             <div>
-              <p className="font-medium text-slate-900 dark:text-white">
+              <p className="font-medium text-slate-900 dark:text-slate-100">
                 Notifications
               </p>
-              <p className="text-sm text-slate-500">
-                Receive alerts for unusual spending
+              <p className="text-sm text-slate-500 dark:text-slate-400">
+                Enable or disable app notifications
               </p>
             </div>
           </div>
           <button
             onClick={toggleNotifications}
-            className={`w-12 h-6 rounded-full transition-colors relative ${userSettings.notifications ? "bg-teal-500" : "bg-slate-300"}`}
+            className={cn(
+              "w-12 h-6 rounded-full transition-colors relative",
+              userSettings.notifications ? "bg-blue-600" : "bg-slate-300",
+            )}
           >
             <span
-              className={`absolute top-1 w-4 h-4 bg-white rounded-full transition-transform ${userSettings.notifications ? "left-7" : "left-1"}`}
+              className={cn(
+                "absolute top-1 w-4 h-4 bg-white rounded-full transition-transform",
+                userSettings.notifications ? "right-1" : "left-1",
+              )}
             />
           </button>
         </div>
 
+        {/* Currency */}
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-3">
             <div className="p-2 bg-slate-100 dark:bg-slate-700 rounded-lg text-slate-600 dark:text-slate-300">
               <Shield size={20} />
             </div>
             <div>
-              <p className="font-medium text-slate-900 dark:text-white">
+              <p className="font-medium text-slate-900 dark:text-slate-100">
                 Currency
               </p>
-              <p className="text-sm text-slate-500">Display currency format</p>
+              <p className="text-sm text-slate-500 dark:text-slate-400">
+                Display currency format
+              </p>
             </div>
           </div>
           <select
             value={userSettings.currency}
             onChange={handleCurrencyChange}
-            className="bg-slate-100 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded px-2 py-1 text-sm outline-none focus:ring-1 focus:ring-teal-500"
+            className="bg-slate-100 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded px-2 py-1 text-sm text-slate-900 dark:text-slate-100 outline-none focus:ring-1 focus:ring-teal-500"
           >
             <option value="ETB">Birr (ETB)</option>
             <option value="USD">USD ($)</option>

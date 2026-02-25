@@ -1,7 +1,10 @@
 @import "tailwindcss";
 
+/* Tell Tailwind v4 to use the .dark class for dark: variants, not prefers-color-scheme */
+@custom-variant dark (&:where(.dark, .dark *));
+
 @theme {
-  /* Colors - Ported from Frontend_Old tailwind.config.js */
+  /* Colors - keeping dark as default (the original design) */
   --color-background-DEFAULT: #0f1419;
   --color-background-card: #1a1f2e;
   --color-background-elevated: #252b3b;
@@ -58,8 +61,6 @@
     max-width: 100vw;
     overflow-x: hidden;
     font-family: var(--font-sans);
-    background-color: var(--color-background-DEFAULT);
-    color: var(--color-text-primary);
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
   }

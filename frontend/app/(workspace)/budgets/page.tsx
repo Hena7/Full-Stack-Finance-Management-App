@@ -81,17 +81,17 @@ export default function BudgetsPage() {
     <div className="space-y-6">
       {isLoading && <LoadingOverlay />}
       <div className="mb-6">
-        <h1 className="text-3xl font-bold text-slate-100 mb-2">
+        <h1 className="text-3xl font-bold text-slate-900 dark:text-slate-100 mb-2">
           Budget Planning
         </h1>
-        <p className="text-slate-400">
+        <p className="text-slate-500 dark:text-slate-400">
           Set and track monthly budgets for each category
         </p>
       </div>
 
       {/* Add Budget Form */}
       <Card className="mb-6">
-        <h2 className="text-xl font-semibold text-slate-100 mb-4">
+        <h2 className="text-xl font-semibold text-slate-900 dark:text-slate-100 mb-4">
           Set Monthly Budget
         </h2>
         <form
@@ -149,7 +149,7 @@ export default function BudgetsPage() {
       {/* Budget Cards */}
       {currentMonthBudgets.length > 0 ? (
         <div>
-          <h2 className="text-xl font-semibold text-slate-100 mb-4">
+          <h2 className="text-xl font-semibold text-slate-900 dark:text-slate-100 mb-4">
             Current Month Budgets ({currentMonthName})
           </h2>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
@@ -176,10 +176,10 @@ export default function BudgetsPage() {
           <div className="inline-flex items-center justify-center w-16 h-16 bg-blue-500/10 rounded-full mb-4">
             <AlertCircle className="w-8 h-8 text-blue-500" />
           </div>
-          <h3 className="text-lg font-semibold text-slate-100 mb-2">
+          <h3 className="text-lg font-semibold text-slate-900 dark:text-slate-100 mb-2">
             No Budgets Set
           </h3>
-          <p className="text-slate-400">
+          <p className="text-slate-500 dark:text-slate-400">
             Set your first budget using the form above
           </p>
         </div>

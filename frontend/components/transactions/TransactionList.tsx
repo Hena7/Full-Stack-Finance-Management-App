@@ -42,8 +42,10 @@ export function TransactionList({
     <Card>
       {transactions.length === 0 ? (
         <div className="text-center py-12">
-          <p className="text-slate-500 mb-2">No {type}s found</p>
-          <p className="text-sm text-slate-500">
+          <p className="text-slate-500 dark:text-slate-400 mb-2">
+            No {type}s found
+          </p>
+          <p className="text-sm text-slate-500 dark:text-slate-400">
             Click the button above to add your first {type}
           </p>
         </div>
@@ -51,20 +53,20 @@ export function TransactionList({
         <div className="overflow-x-auto">
           <table className="w-full">
             <thead>
-              <tr className="border-b border-slate-700">
-                <th className="text-left py-3 px-4 text-sm font-semibold text-slate-400">
+              <tr className="border-b border-slate-200 dark:border-slate-700">
+                <th className="text-left py-3 px-4 text-sm font-semibold text-slate-500 dark:text-slate-400">
                   Date
                 </th>
-                <th className="text-left py-3 px-4 text-sm font-semibold text-slate-400">
+                <th className="text-left py-3 px-4 text-sm font-semibold text-slate-500 dark:text-slate-400">
                   Category
                 </th>
-                <th className="text-left py-3 px-4 text-sm font-semibold text-slate-400">
+                <th className="text-left py-3 px-4 text-sm font-semibold text-slate-500 dark:text-slate-400">
                   Note (description)
                 </th>
-                <th className="text-right py-3 px-4 text-sm font-semibold text-slate-400">
+                <th className="text-right py-3 px-4 text-sm font-semibold text-slate-500 dark:text-slate-400">
                   Amount
                 </th>
-                <th className="text-right py-3 px-4 text-sm font-semibold text-slate-400">
+                <th className="text-right py-3 px-4 text-sm font-semibold text-slate-500 dark:text-slate-400">
                   Actions
                 </th>
               </tr>
@@ -73,9 +75,9 @@ export function TransactionList({
               {sortedTransactions.map((transaction) => (
                 <tr
                   key={transaction.id}
-                  className="border-b border-slate-800/50 hover:bg-slate-800/50 transition-colors"
+                  className="border-b border-slate-100 dark:border-slate-800/50 hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors"
                 >
-                  <td className="py-3 px-4 text-sm text-slate-200">
+                  <td className="py-3 px-4 text-sm text-slate-700 dark:text-slate-200">
                     {formatDate(transaction.date)}
                   </td>
                   <td className="py-3 px-4">
@@ -83,7 +85,7 @@ export function TransactionList({
                       {transaction.category}
                     </span>
                   </td>
-                  <td className="py-3 px-4 text-sm text-slate-400 truncate max-w-xs">
+                  <td className="py-3 px-4 text-sm text-slate-500 dark:text-slate-400 truncate max-w-xs">
                     {transaction.description || "-"}
                   </td>
                   <td className="py-3 px-4 text-right">

@@ -53,7 +53,9 @@ export function StatCard({
           <Icon className="w-6 h-6" />
         </div>
         <div>
-          <p className="text-sm text-slate-400 font-medium">{label}</p>
+          <p className="text-sm text-slate-600 dark:text-slate-400 font-medium">
+            {label}
+          </p>
           <h3 className={cn("text-2xl font-bold mt-1", styles.text)}>
             {formatCurrency(value)}
           </h3>

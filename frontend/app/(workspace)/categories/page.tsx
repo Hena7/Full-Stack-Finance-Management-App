@@ -76,10 +76,10 @@ export default function CategoriesPage() {
     <div className="space-y-6">
       {isSubmitting && <LoadingOverlay />}
       <div className="mb-6">
-        <h1 className="text-3xl font-bold text-slate-100 mb-2">
+        <h1 className="text-3xl font-bold text-slate-900 dark:text-slate-100 mb-2">
           Category Management
         </h1>
-        <p className="text-slate-400">
+        <p className="text-slate-500 dark:text-slate-400">
           Organize your income and expense categories
         </p>
       </div>
@@ -88,7 +88,7 @@ export default function CategoriesPage() {
         {/* Income Categories */}
         <Card>
           <div className="flex items-center justify-between mb-6">
-            <h2 className="text-xl font-semibold text-slate-100 flex items-center gap-2">
+            <h2 className="text-xl font-semibold text-slate-900 dark:text-slate-100 flex items-center gap-2">
               <TrendingUp className="w-6 h-6 text-emerald-500" />
               Income Categories
             </h2>
@@ -106,13 +106,13 @@ export default function CategoriesPage() {
             {incomeCategories.map((category) => (
               <div
                 key={category.id}
-                className="flex items-center justify-between p-3 bg-slate-800/50 rounded-lg hover:bg-slate-800 transition-all duration-200"
+                className="flex items-center justify-between p-3 bg-slate-100 dark:bg-slate-800/50 rounded-lg hover:bg-slate-200 dark:hover:bg-slate-800 transition-all duration-200"
               >
                 <div className="flex items-center gap-3">
                   <div className="p-2 bg-emerald-500/10 rounded-lg">
                     <div className="w-2 h-2 bg-emerald-500 rounded-full" />
                   </div>
-                  <span className="font-medium text-slate-200">
+                  <span className="font-medium text-slate-900 dark:text-slate-200">
                     {category.name}
                   </span>
                 </div>
@@ -129,7 +129,9 @@ export default function CategoriesPage() {
 
             {incomeCategories.length === 0 && (
               <div className="text-center py-8">
-                <p className="text-slate-500">No income categories yet</p>
+                <p className="text-slate-500 dark:text-slate-400">
+                  No income categories yet
+                </p>
               </div>
             )}
           </div>
@@ -138,7 +140,7 @@ export default function CategoriesPage() {
         {/* Expense Categories */}
         <Card>
           <div className="flex items-center justify-between mb-6">
-            <h2 className="text-xl font-semibold text-slate-100 flex items-center gap-2">
+            <h2 className="text-xl font-semibold text-slate-900 dark:text-slate-100 flex items-center gap-2">
               <TrendingDown className="w-6 h-6 text-red-500" />
               Expense Categories
             </h2>
@@ -156,13 +158,13 @@ export default function CategoriesPage() {
             {expenseCategories.map((category) => (
               <div
                 key={category.id}
-                className="flex items-center justify-between p-3 bg-slate-800/50 rounded-lg hover:bg-slate-800 transition-all duration-200"
+                className="flex items-center justify-between p-3 bg-slate-100 dark:bg-slate-800/50 rounded-lg hover:bg-slate-200 dark:hover:bg-slate-800 transition-all duration-200"
               >
                 <div className="flex items-center gap-3">
                   <div className="p-2 bg-red-500/10 rounded-lg">
                     <div className="w-2 h-2 bg-red-500 rounded-full" />
                   </div>
-                  <span className="font-medium text-slate-200">
+                  <span className="font-medium text-slate-900 dark:text-slate-200">
                     {category.name}
                   </span>
                 </div>
@@ -179,7 +181,9 @@ export default function CategoriesPage() {
 
             {expenseCategories.length === 0 && (
               <div className="text-center py-8">
-                <p className="text-slate-500">No expense categories yet</p>
+                <p className="text-slate-500 dark:text-slate-400">
+                  No expense categories yet
+                </p>
               </div>
             )}
           </div>

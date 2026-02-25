@@ -53,25 +53,27 @@ export function Navbar({ onToggleSidebar }: NavbarProps) {
   };
 
   return (
-    <header className="bg-slate-800/50 backdrop-blur-md border-b border-slate-800 sticky top-0 z-20">
+    <header className="bg-white/80 border-b border-slate-200 dark:bg-slate-800/50 dark:border-slate-800 backdrop-blur-md sticky top-0 z-20">
       <div className="flex items-center justify-between px-4 md:px-6 py-4">
         {/* Mobile Menu Button */}
         <button
           onClick={onToggleSidebar}
-          className="lg:hidden p-2 rounded-lg hover:bg-slate-800 transition-colors text-slate-100"
+          className="lg:hidden p-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors text-slate-900 dark:text-slate-100"
         >
           <Menu className="w-6 h-6" />
         </button>
 
         {/* Page Title (hidden on mobile, shown on desktop) */}
         <div className="hidden lg:block">
-          <h2 className="text-xl font-semibold text-slate-100">{pageTitle}</h2>
+          <h2 className="text-xl font-semibold text-slate-900 dark:text-slate-100">
+            {pageTitle}
+          </h2>
         </div>
 
         {/* Right Section */}
         <div className="flex items-center gap-4 ml-auto">
           {/* Current Date */}
-          <div className="hidden md:block text-sm text-slate-400">
+          <div className="hidden md:block text-sm text-slate-500 dark:text-slate-400">
             {currentDate}
           </div>
 

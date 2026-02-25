@@ -81,10 +81,12 @@ export default function ExpensesPage() {
       {isSubmitting && <LoadingOverlay />}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-bold text-slate-100 mb-2">
+          <h1 className="text-3xl font-bold text-slate-900 dark:text-slate-100 mb-2">
             Expense Management
           </h1>
-          <p className="text-slate-400">Track all your expenses</p>
+          <p className="text-slate-500 dark:text-slate-400">
+            Track all your expenses
+          </p>
         </div>
         <Button variant="danger" onClick={() => setShowAddModal(true)}>
           <Plus className="w-5 h-5 mr-2" />
@@ -95,21 +97,27 @@ export default function ExpensesPage() {
       {/* Stats */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6">
         <Card>
-          <p className="text-sm text-slate-400 mb-1">Total Expenses</p>
+          <p className="text-sm text-slate-500 dark:text-slate-400 mb-1">
+            Total Expenses
+          </p>
           <p className="text-2xl font-bold text-red-500">
             {formatCurrency(totalExpense)}
           </p>
         </Card>
 
         <Card>
-          <p className="text-sm text-slate-400 mb-1">This Month</p>
+          <p className="text-sm text-slate-500 dark:text-slate-400 mb-1">
+            This Month
+          </p>
           <p className="text-2xl font-bold text-red-500">
             {formatCurrency(monthlyExpense)}
           </p>
         </Card>
 
         <Card>
-          <p className="text-sm text-slate-400 mb-1">Transactions</p>
+          <p className="text-sm text-slate-500 dark:text-slate-400 mb-1">
+            Transactions
+          </p>
           <p className="text-2xl font-bold text-blue-500">
             {expenseList.length}
           </p>

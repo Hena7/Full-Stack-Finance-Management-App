@@ -36,10 +36,12 @@ export default function DashboardPage() {
     <div className="space-y-6">
       {/* Welcome Section */}
       <div className="mb-6">
-        <h1 className="text-3xl font-bold text-slate-100 mb-2">
+        <h1 className="text-3xl font-bold text-slate-900 dark:text-slate-100 mb-2">
           Welcome back, {userName}! 👋
         </h1>
-        <p className="text-slate-400">Here&#39;s your financial overview</p>
+        <p className="text-slate-500 dark:text-slate-400">
+          Here&#39;s your financial overview
+        </p>
       </div>
 
       {/* Stat Cards Grid */}
@@ -77,21 +79,23 @@ export default function DashboardPage() {
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6 mb-6">
         <Card>
           <div className="flex flex-col h-full justify-between">
-            <h3 className="text-lg font-semibold text-slate-100 mb-4">
+            <h3 className="text-lg font-semibold text-slate-900 dark:text-slate-100 mb-4">
               Monthly Income
             </h3>
             <div className="flex items-baseline gap-2">
               <p className="text-3xl font-bold text-emerald-500">
                 {formatCurrency(monthlyIncome)}
               </p>
-              <p className="text-sm text-slate-500">this month</p>
+              <p className="text-sm text-slate-500 dark:text-slate-400">
+                this month
+              </p>
             </div>
           </div>
         </Card>
 
         <Card>
           <div className="flex flex-col h-full justify-between">
-            <h3 className="text-lg font-semibold text-slate-100 mb-4">
+            <h3 className="text-lg font-semibold text-slate-900 dark:text-slate-100 mb-4">
               Monthly Expenses
             </h3>
             <div className="flex items-baseline gap-2">
@@ -113,7 +117,7 @@ export default function DashboardPage() {
 
         {/* Quick Actions */}
         <Card>
-          <h3 className="text-lg font-semibold text-slate-100 mb-4">
+          <h3 className="text-lg font-semibold text-slate-900 dark:text-slate-100 mb-4">
             Quick Actions
           </h3>
           <div className="space-y-3">
@@ -122,7 +126,7 @@ export default function DashboardPage() {
               className="flex items-center gap-3 p-3 bg-emerald-500/10 hover:bg-emerald-500/20 rounded-lg transition-colors group"
             >
               <TrendingUp className="w-5 h-5 text-emerald-500" />
-              <span className="text-slate-200 font-medium group-hover:text-emerald-500 transition-colors">
+              <span className="text-slate-700 dark:text-slate-200 font-medium group-hover:text-emerald-500 transition-colors">
                 Add Income
               </span>
             </Link>
@@ -132,7 +136,7 @@ export default function DashboardPage() {
               className="flex items-center gap-3 p-3 bg-red-500/10 hover:bg-red-500/20 rounded-lg transition-colors group"
             >
               <TrendingDown className="w-5 h-5 text-red-500" />
-              <span className="text-slate-200 font-medium group-hover:text-red-500 transition-colors">
+              <span className="text-slate-700 dark:text-slate-200 font-medium group-hover:text-red-500 transition-colors">
                 Add Expense
               </span>
             </Link>
@@ -142,7 +146,7 @@ export default function DashboardPage() {
               className="flex items-center gap-3 p-3 bg-amber-500/10 hover:bg-amber-500/20 rounded-lg transition-colors group"
             >
               <Banknote className="w-5 h-5 text-amber-500" />
-              <span className="text-slate-200 font-medium group-hover:text-amber-500 transition-colors">
+              <span className="text-slate-700 dark:text-slate-200 font-medium group-hover:text-amber-500 transition-colors">
                 Set Budget
               </span>
             </Link>
@@ -152,7 +156,7 @@ export default function DashboardPage() {
               className="flex items-center gap-3 p-3 bg-blue-500/10 hover:bg-blue-500/20 rounded-lg transition-colors group"
             >
               <BarChart3 className="w-5 h-5 text-blue-500" />
-              <span className="text-slate-200 font-medium group-hover:text-blue-500 transition-colors">
+              <span className="text-slate-700 dark:text-slate-200 font-medium group-hover:text-blue-500 transition-colors">
                 View Reports
               </span>
             </Link>

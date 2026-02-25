@@ -81,10 +81,12 @@ export default function IncomePage() {
       {isSubmitting && <LoadingOverlay />}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-bold text-slate-100 mb-2">
+          <h1 className="text-3xl font-bold text-slate-900 dark:text-slate-100 mb-2">
             Income Management
           </h1>
-          <p className="text-slate-400">Track all your income sources</p>
+          <p className="text-slate-500 dark:text-slate-400">
+            Track all your income sources
+          </p>
         </div>
         <Button variant="success" onClick={() => setShowAddModal(true)}>
           <Plus className="w-5 h-5 mr-2" />
@@ -95,21 +97,27 @@ export default function IncomePage() {
       {/* Stats */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6">
         <Card>
-          <p className="text-sm text-slate-400 mb-1">Total Income</p>
+          <p className="text-sm text-slate-500 dark:text-slate-400 mb-1">
+            Total Income
+          </p>
           <p className="text-2xl font-bold text-emerald-500">
             {formatCurrency(totalIncome)}
           </p>
         </Card>
 
         <Card>
-          <p className="text-sm text-slate-400 mb-1">This Month</p>
+          <p className="text-sm text-slate-500 dark:text-slate-400 mb-1">
+            This Month
+          </p>
           <p className="text-2xl font-bold text-emerald-500">
             {formatCurrency(monthlyIncome)}
           </p>
         </Card>
 
         <Card>
-          <p className="text-sm text-slate-400 mb-1">Transactions</p>
+          <p className="text-sm text-slate-500 dark:text-slate-400 mb-1">
+            Transactions
+          </p>
           <p className="text-2xl font-bold text-blue-500">
             {incomeList.length}
           </p>
