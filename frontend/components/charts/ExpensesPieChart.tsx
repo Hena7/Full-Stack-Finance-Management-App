@@ -3,6 +3,7 @@
 import React, { useMemo } from "react";
 import { Card } from "@/components/ui/card";
 import { Transaction } from "@/hooks/useTransactions";
+import { useFinance } from "@/lib/context/FinanceContext";
 import {
   PieChart,
   Pie,
@@ -17,6 +18,7 @@ interface ExpensesPieChartProps {
 }
 
 export function ExpensesPieChart({ transactions }: ExpensesPieChartProps) {
+  const { formatCurrency } = useFinance();
   const data = useMemo(() => {
     const expenses = transactions.filter((t) => t.type === "expense");
     const categoryTotals: Record<string, number> = {};
@@ -74,7 +76,7 @@ export function ExpensesPieChart({ transactions }: ExpensesPieChartProps) {
               </Pie>
               <Tooltip
                 formatter={(value: any) => [
-                  value ? `$${Number(value).toLocaleString()}` : "$0",
+                  value ? formatCurrency(Number(value)) : formatCurrency(0),
                   "Amount",
                 ]}
                 contentStyle={{

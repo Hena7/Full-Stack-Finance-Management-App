@@ -2,6 +2,7 @@
 
 import React, { useState } from "react";
 import { useTransactions } from "@/hooks/useTransactions";
+import { useFinance } from "@/lib/context/FinanceContext";
 import { Card } from "@/components/ui/card";
 import { LoadingSpinner } from "@/components/ui/loading-spinner";
 import {
@@ -20,6 +21,7 @@ import {
 
 export default function Charts() {
   const { transactions, isLoading } = useTransactions();
+  const { formatCurrency } = useFinance();
   const [chartType, setChartType] = useState<"trends" | "breakdown">("trends");
 
   if (isLoading) {
@@ -125,7 +127,7 @@ export default function Charts() {
                 tickLine={false}
                 axisLine={false}
                 fontSize={12}
-                tickFormatter={(value) => `$${value}`}
+                tickFormatter={(value) => formatCurrency(value)}
               />
               <Tooltip
                 contentStyle={{
@@ -182,7 +184,10 @@ export default function Charts() {
                   color: "#f8fafc",
                 }}
                 itemStyle={{ color: "#f8fafc" }}
-                formatter={(value: any) => [`$${value.toFixed(2)}`, "Amount"]}
+                formatter={(value: any) => [
+                  formatCurrency(Number(value)),
+                  "Amount",
+                ]}
               />
             </PieChart>
           </ResponsiveContainer>
@@ -206,12 +211,11 @@ export default function Charts() {
             Avg Monthly Expense
           </h4>
           <p className="text-xl text-red-400 font-bold mt-2 dark:text-white">
-            $
-            {(
+            {formatCurrency(
               transactions
                 .filter((t) => t.type === "expense")
-                .reduce((a, b) => a + b.amount, 0) / (dataByMonth.length || 1)
-            ).toFixed(2)}
+                .reduce((a, b) => a + b.amount, 0) / (dataByMonth.length || 1),
+            )}
           </p>
         </Card>
         <Card className="dark:bg-slate-900 border-slate-800 p-6 flex flex-col items-center">

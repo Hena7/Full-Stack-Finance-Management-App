@@ -3,6 +3,7 @@
 import React, { useMemo } from "react";
 import { Card } from "@/components/ui/card";
 import { Transaction } from "@/hooks/useTransactions";
+import { useFinance } from "@/lib/context/FinanceContext";
 import {
   AreaChart,
   Area,
@@ -18,6 +19,7 @@ interface SpendingTrendChartProps {
 }
 
 export function SpendingTrendChart({ transactions }: SpendingTrendChartProps) {
+  const { formatCurrency } = useFinance();
   const data = useMemo(() => {
     // Sort transactions by date
     const sorted = [...transactions]
@@ -76,7 +78,7 @@ export function SpendingTrendChart({ transactions }: SpendingTrendChartProps) {
                 fontSize={12}
                 tickLine={false}
                 axisLine={false}
-                tickFormatter={(value) => `$${value}`}
+                tickFormatter={(value) => formatCurrency(value)}
               />
               <CartesianGrid
                 strokeDasharray="3 3"
@@ -90,7 +92,7 @@ export function SpendingTrendChart({ transactions }: SpendingTrendChartProps) {
                   color: "#f1f5f9",
                 }}
                 formatter={(value: any) => [
-                  value ? `$${Number(value).toLocaleString()}` : "$0",
+                  value ? formatCurrency(Number(value)) : formatCurrency(0),
                   "Amount",
                 ]}
               />

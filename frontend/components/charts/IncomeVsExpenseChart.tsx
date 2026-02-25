@@ -3,6 +3,7 @@
 import React, { useMemo } from "react";
 import { Card } from "@/components/ui/card";
 import { Transaction } from "@/hooks/useTransactions";
+import { useFinance } from "@/lib/context/FinanceContext";
 import {
   BarChart,
   Bar,
@@ -20,6 +21,7 @@ interface IncomeVsExpenseChartProps {
 export function IncomeVsExpenseChart({
   transactions,
 }: IncomeVsExpenseChartProps) {
+  const { formatCurrency } = useFinance();
   const data = useMemo(() => {
     // Current year monthly data
     const currentYear = new Date().getFullYear();
@@ -78,11 +80,11 @@ export function IncomeVsExpenseChart({
               fontSize={12}
               tickLine={false}
               axisLine={false}
-              tickFormatter={(value) => `$${value}`}
+              tickFormatter={(value) => formatCurrency(value)}
             />
             <Tooltip
               formatter={(value: any) => [
-                `$${Number(value).toLocaleString()}`,
+                formatCurrency(Number(value)),
                 "Amount",
               ]}
               cursor={{ fill: "#334155", opacity: 0.4 }}

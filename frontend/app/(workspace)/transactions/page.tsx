@@ -2,6 +2,7 @@
 
 import React, { useState } from "react";
 import { useTransactions } from "@/hooks/useTransactions";
+import { useFinance } from "@/lib/context/FinanceContext";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { LoadingSpinner } from "@/components/ui/loading-spinner";
@@ -25,6 +26,7 @@ export default function Transactions() {
     totalIncome,
     totalExpense,
   } = useTransactions();
+  const { formatCurrency } = useFinance();
   const [viewMode, setViewMode] = useState<"list" | "grid">("list");
   const [filterCategory, setFilterCategory] = useState<string>("All");
   const [searchQuery, setSearchQuery] = useState("");
@@ -94,7 +96,7 @@ export default function Transactions() {
             Net Balance
           </p>
           <p className="text-2xl font-bold dark:text-white mt-1">
-            ${balance.toFixed(2)}
+            {formatCurrency(balance)}
           </p>
         </Card>
         <Card className="dark:bg-slate-900 border-slate-800 p-4 border-l-4 border-l-blue-500">
@@ -102,7 +104,7 @@ export default function Transactions() {
             Total Income
           </p>
           <p className="text-2xl font-bold dark:text-white mt-1">
-            ${totalIncome.toFixed(2)}
+            {formatCurrency(totalIncome)}
           </p>
         </Card>
         <Card className="dark:bg-slate-900 border-slate-800 p-4 border-l-4 border-l-red-500">
@@ -110,7 +112,7 @@ export default function Transactions() {
             Total Expenses
           </p>
           <p className="text-2xl font-bold dark:text-white mt-1">
-            ${totalExpense.toFixed(2)}
+            {formatCurrency(totalExpense)}
           </p>
         </Card>
       </div>
@@ -207,7 +209,8 @@ export default function Transactions() {
                 <span
                   className={`font-bold text-lg ${t.type === "income" ? "text-emerald-500" : "dark:text-white"}`}
                 >
-                  {t.type === "income" ? "+" : "-"}${t.amount.toFixed(2)}
+                  {t.type === "income" ? "+" : "-"}
+                  {formatCurrency(t.amount)}
                 </span>
                 <button
                   onClick={() => handleDelete(t.id, t.type)}
@@ -249,7 +252,8 @@ export default function Transactions() {
                 </div>
               </div>
               <h3 className="font-bold text-2xl mb-1 dark:text-white">
-                {t.type === "income" ? "+" : "-"}${t.amount.toFixed(2)}
+                {t.type === "income" ? "+" : "-"}
+                {formatCurrency(t.amount)}
               </h3>
               <div className="flex items-center gap-2 mt-3">
                 <span className="text-xs dark:bg-slate-800 text-slate-400 px-2 py-1 rounded text-[10px] uppercase tracking-wider font-bold">

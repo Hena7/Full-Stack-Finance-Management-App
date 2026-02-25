@@ -42,6 +42,9 @@ const DEFAULT_EXPENSE_CATEGORIES = [
 
 export const OTHERS_CATEGORY_NAME = "Others";
 
+// Module-level guard: prevents concurrent seeding within the same session
+const seedingInProgress = new Set<string>();
+
 export function useCategories() {
   const { isAuthenticated } = useAuth();
   const [categories, setCategories] = useState<Category[]>([]);
@@ -87,9 +90,20 @@ export function useCategories() {
       const mapped = data.map(mapToFrontend);
       setCategories(mapped);
 
-      // If the user has no categories at all, seed defaults
-      if (mapped.length === 0) {
+      // Guard: only seed if user truly has 0 categories AND we haven't seeded yet.
+      // The localStorage flag persists across logins/StrictMode double-mounts.
+      // The module-level Set prevents two concurrent async calls both passing the check.
+      const seedKey = "budgetwise_defaults_seeded";
+      const alreadySeeded = localStorage.getItem(seedKey);
+      if (
+        mapped.length === 0 &&
+        !alreadySeeded &&
+        !seedingInProgress.has(seedKey)
+      ) {
+        seedingInProgress.add(seedKey);
+        localStorage.setItem(seedKey, "true");
         await seedDefaults();
+        seedingInProgress.delete(seedKey);
       }
     } catch (error) {
       console.error("Failed to fetch categories:", error);
