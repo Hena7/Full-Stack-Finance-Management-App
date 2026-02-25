@@ -4,7 +4,6 @@ import React, { useState } from "react";
 import { useTransactions } from "@/hooks/useTransactions";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import { LoadingSpinner } from "@/components/ui/loading-spinner";
 import {
   Search,
@@ -67,21 +66,21 @@ export default function Transactions() {
     <div className="space-y-6 animate-fade-in">
       <div className="flex flex-col md:flex-row justify-between md:items-center gap-4">
         <div>
-          <h2 className="text-2xl font-bold text-white">Transactions</h2>
+          <h2 className="text-2xl font-bold dark:text-white">Transactions</h2>
           <p className="text-slate-400 text-sm mt-1">
             Browse and manage your financial history
           </p>
         </div>
-        <div className="flex items-center gap-2 bg-slate-900 p-1 rounded-lg border border-slate-800">
+        <div className="flex items-center gap-2 dark:bg-slate-900 p-1 rounded-lg border border-slate-800">
           <button
             onClick={() => setViewMode("list")}
-            className={`p-2 rounded-md transition-all ${viewMode === "list" ? "bg-slate-800 text-white" : "text-slate-500 hover:text-slate-400"}`}
+            className={`p-2 rounded-md transition-all ${viewMode === "list" ? "dark:bg-slate-800 dark:text-white" : "text-slate-500 hover:text-slate-400"}`}
           >
             <ListIcon size={18} />
           </button>
           <button
             onClick={() => setViewMode("grid")}
-            className={`p-2 rounded-md transition-all ${viewMode === "grid" ? "bg-slate-800 text-white" : "text-slate-500 hover:text-slate-400"}`}
+            className={`p-2 rounded-md transition-all ${viewMode === "grid" ? "dark:bg-slate-800 dark:text-white" : "text-slate-500 hover:text-slate-400"}`}
           >
             <Grid size={18} />
           </button>
@@ -90,27 +89,27 @@ export default function Transactions() {
 
       {/* Stats Summary */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-        <Card className="bg-slate-900 border-slate-800 p-4 border-l-4 border-l-emerald-500">
+        <Card className="dark:bg-slate-900 border-slate-800 p-4 border-l-4 border-l-emerald-500">
           <p className="text-slate-500 text-xs font-medium uppercase">
             Net Balance
           </p>
-          <p className="text-2xl font-bold text-white mt-1">
+          <p className="text-2xl font-bold dark:text-white mt-1">
             ${balance.toFixed(2)}
           </p>
         </Card>
-        <Card className="bg-slate-900 border-slate-800 p-4 border-l-4 border-l-blue-500">
+        <Card className="dark:bg-slate-900 border-slate-800 p-4 border-l-4 border-l-blue-500">
           <p className="text-slate-500 text-xs font-medium uppercase">
             Total Income
           </p>
-          <p className="text-2xl font-bold text-white mt-1">
+          <p className="text-2xl font-bold dark:text-white mt-1">
             ${totalIncome.toFixed(2)}
           </p>
         </Card>
-        <Card className="bg-slate-900 border-slate-800 p-4 border-l-4 border-l-red-500">
+        <Card className="dark:bg-slate-900 border-slate-800 p-4 border-l-4 border-l-red-500">
           <p className="text-slate-500 text-xs font-medium uppercase">
             Total Expenses
           </p>
-          <p className="text-2xl font-bold text-white mt-1">
+          <p className="text-2xl font-bold dark:text-white mt-1">
             ${totalExpense.toFixed(2)}
           </p>
         </Card>
@@ -128,7 +127,7 @@ export default function Transactions() {
             placeholder="Search keywords or categories..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="w-full pl-10 pr-4 py-2.5 bg-slate-900 border border-slate-800 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500 text-white placeholder-slate-500"
+            className="w-full pl-10 pr-4 py-2.5 dark:bg-slate-900 border border-slate-800 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500 dark:text-white placeholder-slate-500"
           />
         </div>
         <div className="relative w-full md:w-56">
@@ -139,7 +138,7 @@ export default function Transactions() {
           <select
             value={filterCategory}
             onChange={(e) => setFilterCategory(e.target.value)}
-            className="w-full pl-10 pr-8 py-2.5 bg-slate-900 border border-slate-800 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500 appearance-none text-white cursor-pointer"
+            className="w-full pl-10 pr-8 py-2.5 dark:bg-slate-900 border border-slate-800 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500 appearance-none dark:text-white cursor-pointer"
           >
             <option value="All">All Categories</option>
             {categories.map((c) => (
@@ -153,8 +152,8 @@ export default function Transactions() {
 
       {/* Content */}
       {filteredTransactions.length === 0 ? (
-        <Card className="py-20 flex flex-col items-center justify-center bg-slate-900 border-dashed border-2 border-slate-800">
-          <div className="p-4 bg-slate-800 rounded-full mb-4">
+        <Card className="py-20 flex flex-col items-center justify-center dark:bg-slate-900 border-dashed border-2 border-slate-800">
+          <div className="p-4 dark:bg-slate-800 rounded-full mb-4">
             <Calendar size={32} className="text-slate-600" />
           </div>
           <p className="text-slate-500 font-medium text-lg">
@@ -179,11 +178,11 @@ export default function Transactions() {
           {filteredTransactions.map((t) => (
             <Card
               key={t.id}
-              className="p-4 flex flex-col md:flex-row md:items-center justify-between border-slate-800 bg-slate-900 hover:border-slate-700 transition-all group"
+              className="p-4 flex flex-col md:flex-row md:items-center justify-between border-slate-800 dark:bg-slate-900 hover:border-slate-700 transition-all group"
             >
               <div className="flex items-center gap-4 mb-2 md:mb-0">
                 <div
-                  className={`p-3 rounded-lg ${t.type === "income" ? "bg-emerald-500/10 text-emerald-500" : "bg-red-500/10 text-red-400"}`}
+                  className={`p-3 rounded-lg ${t.type === "income" ? "dark:bg-emerald-500/10 text-emerald-500" : "dark:bg-red-500/10 text-red-400"}`}
                 >
                   {t.type === "income" ? (
                     <Wallet size={20} />
@@ -192,11 +191,11 @@ export default function Transactions() {
                   )}
                 </div>
                 <div>
-                  <p className="font-semibold text-white">
+                  <p className="font-semibold dark:text-white">
                     {t.description || t.category}
                   </p>
                   <p className="text-xs text-slate-500 flex items-center gap-1.5 mt-0.5">
-                    <span className="bg-slate-800 px-1.5 py-0.5 rounded text-slate-400">
+                    <span className="bg-slate-200 dark:bg-slate-800 px-1.5 py-0.5 rounded text-slate-400">
                       {t.category}
                     </span>
                     <span>•</span>
@@ -206,7 +205,7 @@ export default function Transactions() {
               </div>
               <div className="flex items-center gap-6">
                 <span
-                  className={`font-bold text-lg ${t.type === "income" ? "text-emerald-500" : "text-white"}`}
+                  className={`font-bold text-lg ${t.type === "income" ? "text-emerald-500" : "dark:text-white"}`}
                 >
                   {t.type === "income" ? "+" : "-"}${t.amount.toFixed(2)}
                 </span>
@@ -225,7 +224,7 @@ export default function Transactions() {
           {filteredTransactions.map((t) => (
             <Card
               key={t.id}
-              className="bg-slate-900 border-slate-800 p-5 hover:border-slate-700 transition-all group"
+              className="dark:bg-slate-900 border-slate-800 p-5 hover:border-slate-700 transition-all group"
             >
               <div className="flex justify-between items-start mb-4">
                 <div
@@ -249,11 +248,11 @@ export default function Transactions() {
                   </button>
                 </div>
               </div>
-              <h3 className="font-bold text-2xl mb-1 text-white">
+              <h3 className="font-bold text-2xl mb-1 dark:text-white">
                 {t.type === "income" ? "+" : "-"}${t.amount.toFixed(2)}
               </h3>
               <div className="flex items-center gap-2 mt-3">
-                <span className="text-xs bg-slate-800 text-slate-400 px-2 py-1 rounded text-[10px] uppercase tracking-wider font-bold">
+                <span className="text-xs dark:bg-slate-800 text-slate-400 px-2 py-1 rounded text-[10px] uppercase tracking-wider font-bold">
                   {t.category}
                 </span>
               </div>

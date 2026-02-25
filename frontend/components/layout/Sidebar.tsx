@@ -1,6 +1,5 @@
 "use client";
 
-import React from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";
@@ -12,6 +11,8 @@ import {
   Tag,
   Wallet,
   BarChart3,
+  CreditCard,
+  PieChart,
   Settings,
   X,
 } from "lucide-react";
@@ -25,8 +26,10 @@ const navLinks = [
   { href: "/dashboard", label: "Dashboard", icon: Home },
   { href: "/income", label: "Income", icon: TrendingUp },
   { href: "/expenses", label: "Expenses", icon: TrendingDown },
+  { href: "/transactions", label: "Transactions", icon: CreditCard },
   { href: "/categories", label: "Categories", icon: Tag },
   { href: "/budgets", label: "Budgets", icon: Wallet },
+  { href: "/charts", label: "Charts", icon: PieChart },
   { href: "/reports", label: "Reports", icon: BarChart3 },
   { href: "/settings", label: "Settings", icon: Settings },
 ];
@@ -57,7 +60,7 @@ export function Sidebar({ isOpen, onClose }: SidebarProps) {
       {/* Sidebar */}
       <aside
         className={cn(
-          "fixed lg:sticky top-0 h-screen z-40 w-64 bg-white border-r border-slate-200 dark:bg-slate-900 dark:border-slate-800 transition-transform duration-300 flex flex-col",
+          "fixed lg:sticky top-0 min-h-screen z-40 w-64 bg-white border-r border-slate-200 dark:bg-slate-900 dark:border-slate-800 transition-transform duration-300 flex flex-col",
           isOpen ? "translate-x-0" : "-translate-x-full lg:translate-x-0",
         )}
       >

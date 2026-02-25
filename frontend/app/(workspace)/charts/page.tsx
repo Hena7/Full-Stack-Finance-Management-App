@@ -75,28 +75,28 @@ export default function Charts() {
     <div className="space-y-6 animate-fade-in">
       <div className="flex flex-col sm:flex-row justify-between items-center gap-4">
         <div>
-          <h2 className="text-2xl font-bold text-white">Analytics</h2>
+          <h2 className="text-2xl font-bold dark:text-white">Analytics</h2>
           <p className="text-slate-400 text-sm mt-1">
             Visual breakdown of your financial habits
           </p>
         </div>
-        <div className="flex bg-slate-900 p-1 rounded-lg border border-slate-800">
+        <div className="flex dark:bg-slate-900 p-1 rounded-lg border border-slate-800">
           <button
             onClick={() => setChartType("trends")}
-            className={`px-4 py-2 text-sm font-medium rounded-md transition-all ${chartType === "trends" ? "bg-slate-800 text-white shadow-sm" : "text-slate-500 hover:text-slate-400"}`}
+            className={`px-4 py-2 text-sm font-medium rounded-md transition-all ${chartType === "trends" ? "dark:bg-slate-800 dark:text-white shadow-sm" : "text-slate-500 hover:text-slate-400"}`}
           >
             Monthly Trends
           </button>
           <button
             onClick={() => setChartType("breakdown")}
-            className={`px-4 py-2 text-sm font-medium rounded-md transition-all ${chartType === "breakdown" ? "bg-slate-800 text-white shadow-sm" : "text-slate-500 hover:text-slate-400"}`}
+            className={`px-4 py-2 text-sm font-medium rounded-md transition-all ${chartType === "breakdown" ? "dark:bg-slate-800 dark:text-white shadow-sm" : "text-slate-500 hover:text-slate-400"}`}
           >
             Expense Breakdown
           </button>
         </div>
       </div>
 
-      <Card className="h-[450px] flex flex-col justify-center bg-slate-900 border-slate-800 p-6">
+      <Card className="h-[450px] flex flex-col justify-center dark:bg-slate-900 border-slate-800 p-6">
         {transactions.length === 0 ? (
           <div className="text-center text-slate-500">
             <p>No data available to display charts.</p>
@@ -191,21 +191,21 @@ export default function Charts() {
 
       {/* Summary insights derived from real data */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-        <Card className="bg-slate-900 border-slate-800 p-6 flex flex-col items-center">
+        <Card className="dark:bg-slate-900 border-slate-800 p-6 flex flex-col items-center">
           <h4 className="text-slate-500 text-xs font-bold uppercase tracking-widest">
             Top Spending Room
           </h4>
-          <p className="text-xl font-bold mt-2 text-white">
+          <p className="text-xl font-bold mt-2 dark:text-white">
             {dataByCategory.length > 0
               ? dataByCategory.sort((a, b) => b.value - a.value)[0].name
               : "N/A"}
           </p>
         </Card>
-        <Card className="bg-slate-900 border-slate-800 p-6 flex flex-col items-center">
+        <Card className="dark:bg-slate-900 border-slate-800 p-6 flex flex-col items-center">
           <h4 className="text-slate-500 text-xs font-bold uppercase tracking-widest">
             Avg Monthly Expense
           </h4>
-          <p className="text-xl font-bold mt-2 text-white">
+          <p className="text-xl text-red-400 font-bold mt-2 dark:text-white">
             $
             {(
               transactions
@@ -214,7 +214,7 @@ export default function Charts() {
             ).toFixed(2)}
           </p>
         </Card>
-        <Card className="bg-slate-900 border-slate-800 p-6 flex flex-col items-center">
+        <Card className="dark:bg-slate-900 border-slate-800 p-6 flex flex-col items-center">
           <h4 className="text-slate-500 text-xs font-bold uppercase tracking-widest">
             Overall Savings Rate
           </h4>

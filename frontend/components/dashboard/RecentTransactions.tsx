@@ -28,7 +28,7 @@ export function RecentTransactions({ transactions }: RecentTransactionsProps) {
         </h3>
         {transactions.length > 0 && (
           <Link
-            href="/expenses"
+            href="/transactions"
             className="text-sm text-blue-500 hover:text-blue-400 transition-colors"
           >
             View all
