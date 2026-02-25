@@ -37,17 +37,17 @@ export default function Login() {
   };
 
   return (
-    <div className="min-h-screen bg-slate-950 flex items-center justify-center p-4">
+    <div className="min-h-screen dark:bg-slate-950 flex items-center justify-center p-4">
       <div className="w-full max-w-md animate-fade-in-up">
         <div className="text-center mb-8">
           <h1 className="text-3xl font-bold text-emerald-500 mb-2">
             BudgetWise
           </h1>
-          <p className="text-slate-400">
+          <p className="dark:text-slate-400">
             Welcome back. Please login to your account.
           </p>
         </div>
-        <Card className="bg-slate-900 border-slate-800 p-6">
+        <Card className="dark:bg-slate-900 border-slate-800 p-6">
           <form onSubmit={handleSubmit} className="space-y-6">
             <Input
               label="Email"

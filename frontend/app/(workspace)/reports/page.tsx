@@ -1,13 +1,16 @@
 "use client";
 
-import React, { useMemo } from "react";
+import { useMemo } from "react";
 import { useTransactions } from "@/hooks/useTransactions";
 import { Card } from "@/components/ui/card";
 import { ExpensesPieChart } from "@/components/charts/ExpensesPieChart";
 import { IncomeVsExpenseChart } from "@/components/charts/IncomeVsExpenseChart";
 import { SpendingTrendChart } from "@/components/charts/SpendingTrendChart";
+import { useFinance } from "@/lib/context/FinanceContext";
 
 export default function ReportsPage() {
+  const { formatCurrency } = useFinance();
+
   const { transactions, totalIncome, totalExpense } = useTransactions();
 
   const uniqueCategories = useMemo(() => {
@@ -43,22 +46,13 @@ export default function ReportsPage() {
     return Math.round((savings / totalIncome) * 100);
   }, [totalIncome, totalExpense]);
 
-  const formatCurrency = (value: number) => {
-    return new Intl.NumberFormat("en-US", {
-      style: "currency",
-      currency: "USD",
-      minimumFractionDigits: 0,
-      maximumFractionDigits: 0,
-    }).format(value);
-  };
-
   return (
     <div className="space-y-6">
       <div className="mb-6">
-        <h1 className="text-3xl font-bold text-slate-100 mb-2">
+        <h1 className="text-3xl font-bold dark:text-slate-100 mb-2">
           Reports & Analytics
         </h1>
-        <p className="text-slate-400">Visualize your financial data</p>
+        <p className="dark:text-slate-400">Visualize your financial data</p>
       </div>
 
       {/* Summary Stats */}

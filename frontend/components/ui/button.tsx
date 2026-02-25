@@ -16,14 +16,14 @@ const buttonVariants = cva(
           "bg-secondary text-secondary-foreground hover:bg-secondary/80",
         ghost: "hover:bg-accent hover:text-accent-foreground",
         link: "text-primary underline-offset-4 hover:underline",
-        // Custom variants to match Vue app
         primary:
-          "bg-primary hover:bg-primary-hover text-white focus:ring-primary",
+          "bg-primary hover:bg-primary-hover dark:text-white focus:ring-primary",
         success:
-          "bg-success hover:bg-success-hover text-white focus:ring-success",
+          "bg-success hover:bg-success-hover dark:text-white focus:ring-success",
         warning:
-          "bg-warning hover:bg-warning-hover text-white focus:ring-warning",
-        danger: "bg-danger hover:bg-danger-hover text-white focus:ring-danger",
+          "bg-warning hover:bg-warning-hover dark:text-white focus:ring-warning",
+        danger:
+          "bg-danger hover:bg-danger-hover dark:text-white focus:ring-danger",
         elevated:
           "bg-background-elevated hover:bg-border text-text-primary focus:ring-border",
       },

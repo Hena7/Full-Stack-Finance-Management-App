@@ -1,7 +1,7 @@
 "use client";
 
-import React from "react";
 import { Card } from "@/components/ui/card";
+import { useFinance } from "@/lib/context/FinanceContext";
 import { cn } from "@/lib/utils";
 import { Trash2 } from "lucide-react";
 
@@ -22,17 +22,10 @@ export function BudgetCard({
   spent,
   onDelete,
 }: BudgetCardProps) {
+  const { formatCurrency } = useFinance();
+
   const percentage = Math.min((spent / budget) * 100, 100);
   const isOverBudget = spent > budget;
-
-  const formatCurrency = (value: number) => {
-    return new Intl.NumberFormat("en-US", {
-      style: "currency",
-      currency: "USD",
-      minimumFractionDigits: 0,
-      maximumFractionDigits: 0,
-    }).format(value);
-  };
 
   const getProgressBarColor = () => {
     if (percentage < 50) return "bg-emerald-500";

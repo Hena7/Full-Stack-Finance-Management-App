@@ -52,7 +52,7 @@ export function IncomeVsExpenseChart({
 
   return (
     <Card className="h-[400px] flex flex-col">
-      <h3 className="text-lg font-semibold text-slate-100 mb-4">
+      <h3 className="text-lg font-semibold dark:text-slate-100 mb-4">
         Income vs Expenses
       </h3>
       <div className="flex-1 min-h-0">

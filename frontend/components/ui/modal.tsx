@@ -46,7 +46,7 @@ export function Modal({
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
       {/* Backdrop */}
       <div
-        className="absolute inset-0 bg-black/60 backdrop-blur-sm transition-opacity"
+        className="absolute inset-0 dark:bg-black/60 backdrop-blur-sm transition-opacity"
         onClick={onClose}
       />
 
@@ -54,13 +54,13 @@ export function Modal({
       <div
         ref={modalRef}
         className={cn(
-          "relative bg-slate-900 border border-slate-800 rounded-2xl shadow-xl w-full max-w-md max-h-[90vh] overflow-y-auto flex flex-col transform transition-all animate-in fade-in zoom-in-95 duration-200",
+          "relative dark:bg-slate-900 border border-slate-800 rounded-2xl shadow-xl w-full max-w-md max-h-[90vh] overflow-y-auto flex flex-col transform transition-all animate-in fade-in zoom-in-95 duration-200",
         )}
         onClick={(e) => e.stopPropagation()}
       >
         {/* Header */}
         <div className="flex items-center justify-between p-6 border-b border-slate-800">
-          <h3 className="text-xl font-semibold text-slate-100">{title}</h3>
+          <h3 className="text-xl font-semibold dark:text-slate-100">{title}</h3>
           <button
             onClick={onClose}
             className="text-slate-400 hover:text-slate-100 transition-colors rounded-lg p-1 hover:bg-slate-800"
@@ -74,7 +74,7 @@ export function Modal({
 
         {/* Footer */}
         {footer && (
-          <div className="p-6 border-t border-slate-800 bg-slate-900/50">
+          <div className="p-6 border-t border-slate-800 dark:bg-slate-900/50">
             {footer}
           </div>
         )}

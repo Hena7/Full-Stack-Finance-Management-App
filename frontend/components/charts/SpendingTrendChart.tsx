@@ -44,7 +44,7 @@ export function SpendingTrendChart({ transactions }: SpendingTrendChartProps) {
 
   return (
     <Card className="h-[400px] flex flex-col">
-      <h3 className="text-lg font-semibold text-slate-100 mb-4">
+      <h3 className="text-lg font-semibold dark:text-slate-100 mb-4">
         Spending Trend
       </h3>
       {data.length === 0 ? (

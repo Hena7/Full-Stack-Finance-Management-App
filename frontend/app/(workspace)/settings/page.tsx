@@ -85,7 +85,7 @@ export default function Settings() {
         </div>
 
         {/* Notifications */}
-        <div className="flex items-center justify-between">
+        {/* <div className="flex items-center justify-between">
           <div className="flex items-center gap-3">
             <div className="p-2 bg-slate-100 dark:bg-slate-700 rounded-lg text-slate-600 dark:text-slate-300">
               <Bell size={20} />
@@ -113,7 +113,7 @@ export default function Settings() {
               )}
             />
           </button>
-        </div>
+        </div> */}
 
         {/* Currency */}
         <div className="flex items-center justify-between">
@@ -144,7 +144,7 @@ export default function Settings() {
       <div className="pt-4">
         <Button
           variant="destructive"
-          className="w-full flex items-center justify-center gap-2"
+          className="w-full flex items-center justify-center gap-2 hover:bg-blue-500"
           onClick={handleLogout}
         >
           <LogOut size={18} />
