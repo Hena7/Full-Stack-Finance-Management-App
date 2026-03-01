@@ -82,7 +82,7 @@ export function Navbar({ onToggleSidebar }: NavbarProps) {
             variant="secondary"
             size="sm"
             onClick={handleLogout}
-            className="flex items-center gap-2"
+            className="flex items-center gap-2 hover:bg-slate-200 dark:hover:bg-slate-800 cursor-pointer"
           >
             <LogOut className="w-4 h-4" />
             Logout

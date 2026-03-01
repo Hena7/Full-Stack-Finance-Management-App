@@ -13,7 +13,7 @@ export const AuthApiService = {
     password: string,
   ): Promise<AuthResponse> => {
     const response = await api.post<AuthResponse>("/auth/register", {
-      fullName, // Backend expects 'fullName' not 'name'
+      fullName,
       email,
       password,
     });

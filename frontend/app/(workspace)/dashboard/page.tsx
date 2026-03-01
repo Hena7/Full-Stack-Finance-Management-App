@@ -37,7 +37,7 @@ export default function DashboardPage() {
       {/* Welcome Section */}
       <div className="mb-6">
         <h1 className="text-3xl font-bold text-slate-900 dark:text-slate-100 mb-2">
-          Welcome back, {userName}! 👋
+          Welcome back, {userName}!
         </h1>
         <p className="text-slate-500 dark:text-slate-400">
           Here&#39;s your financial overview
@@ -122,7 +122,7 @@ export default function DashboardPage() {
           </h3>
           <div className="space-y-3">
             <Link
-              href="/income"
+              href="/add"
               className="flex items-center gap-3 p-3 bg-emerald-500/10 hover:bg-emerald-500/20 rounded-lg transition-colors group"
             >
               <TrendingUp className="w-5 h-5 text-emerald-500" />
@@ -132,7 +132,7 @@ export default function DashboardPage() {
             </Link>
 
             <Link
-              href="/expenses"
+              href="/add"
               className="flex items-center gap-3 p-3 bg-red-500/10 hover:bg-red-500/20 rounded-lg transition-colors group"
             >
               <TrendingDown className="w-5 h-5 text-red-500" />

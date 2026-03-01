@@ -83,16 +83,16 @@ export default function AddTransaction() {
         <h2 className="text-2xl font-bold">Add Transaction</h2>
         <button
           onClick={() => router.back()}
-          className="p-2 hover:bg-slate-800 rounded-full transition-colors"
+          className="p-2 dark:hover:bg-slate-800 hover:bg-slate-200 rounded-full transition-colors"
         >
           <X size={24} />
         </button>
       </div>
 
-      <Card className="p-6 bg-slate-900 border-slate-800">
+      <Card className="p-6 dark:bg-slate-900 border-slate-800">
         <form onSubmit={handleSubmit} className="space-y-6">
           {/* Type Toggle */}
-          <div className="flex p-1 bg-slate-950 rounded-lg border border-slate-800">
+          <div className="flex p-1 dark:bg-slate-950 rounded-lg border border-slate-800">
             <button
               type="button"
               onClick={() =>
@@ -104,7 +104,7 @@ export default function AddTransaction() {
               }
               className={`flex-1 py-2 text-sm font-medium rounded-md transition-all ${
                 formData.type === "expense"
-                  ? "bg-slate-800 shadow-sm text-white"
+                  ? "bg-slate-200 dark:bg-slate-800 shadow-sm dark:text-white"
                   : "text-slate-500 hover:text-slate-400"
               }`}
             >
@@ -121,7 +121,7 @@ export default function AddTransaction() {
               }
               className={`flex-1 py-2 text-sm font-medium rounded-md transition-all ${
                 formData.type === "income"
-                  ? "bg-slate-800 shadow-sm text-white"
+                  ? "bg-slate-200 dark:bg-slate-800 shadow-sm dark:text-white"
                   : "text-slate-400"
               }`}
             >

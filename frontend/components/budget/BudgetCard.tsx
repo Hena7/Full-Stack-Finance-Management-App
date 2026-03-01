@@ -77,7 +77,9 @@ export function BudgetCard({
       </div>
 
       <div className="flex justify-between text-xs">
-        <span className="text-slate-500 dark:text-slate-400">0%</span>
+        <span className="text-slate-500 dark:text-slate-400">
+          {percentage.toFixed(0)}%
+        </span>
         <span
           className={cn(
             "font-medium",
