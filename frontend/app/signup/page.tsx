@@ -115,7 +115,7 @@ export default function Signup() {
                   <button
                     type="button"
                     onClick={() => setShowPassword(!showPassword)}
-                    className="text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 transition-colors"
+                    className="flex items-center justify-center text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 transition-colors p-1 cursor-pointer"
                   >
                     {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
                   </button>
@@ -136,7 +136,7 @@ export default function Signup() {
                   <button
                     type="button"
                     onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-                    className="text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 transition-colors"
+                    className="flex items-center justify-center text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 transition-colors p-1 cursor-pointer"
                   >
                     {showConfirmPassword ? (
                       <EyeOff size={20} />

@@ -42,12 +42,12 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
             {...props}
           />
           {rightElement && (
-            <div className="absolute right-3 top-1/2 -translate-y-1/2">
+            <div className="absolute right-3 inset-y-0 flex items-center">
               {rightElement}
             </div>
           )}
           {error && !rightElement && (
-            <div className="absolute right-3 top-1/2 -translate-y-1/2 text-red-500 pointer-events-none">
+            <div className="absolute right-3 inset-y-0 flex items-center text-red-500 pointer-events-none">
               <AlertCircle size={20} />
             </div>
           )}
