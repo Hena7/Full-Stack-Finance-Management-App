@@ -34,8 +34,8 @@ export const FinanceProvider: React.FC<{ children: React.ReactNode }> = ({
       if (saved) return JSON.parse(saved);
     }
     return {
-      currency: "ETB",
-      darkMode: true,
+      currency: "USD",
+      darkMode: false,
       notifications: true,
       name: "User",
       email: "",

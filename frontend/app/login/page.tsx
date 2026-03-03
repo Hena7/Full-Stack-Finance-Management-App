@@ -47,7 +47,7 @@ export default function Login() {
             Welcome back. Please login to your account.
           </p>
         </div>
-        <Card className="dark:bg-slate-900 border-slate-800 p-6">
+        <Card className="dark:bg-slate-900 dark:border-slate-800 p-6">
           <form onSubmit={handleSubmit} className="space-y-6">
             <Input
               label="Email"

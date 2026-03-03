@@ -50,7 +50,7 @@ export default function Signup() {
   };
 
   return (
-    <div className="min-h-screen bg-slate-950 flex items-center justify-center p-4">
+    <div className="min-h-screen dark:bg-slate-950 flex items-center justify-center p-4">
       <div className="w-full max-w-md animate-fade-in-up">
         <div className="text-center mb-8">
           <h1 className="text-3xl font-bold text-emerald-500 mb-2">
@@ -60,7 +60,7 @@ export default function Signup() {
             Create your account to start tracking.
           </p>
         </div>
-        <Card className="bg-slate-900 border-slate-800 p-6">
+        <Card className="dark:bg-slate-900 dark:border-slate-800 p-6">
           <form onSubmit={handleSubmit} className="space-y-4">
             <Input
               label="Full Name"

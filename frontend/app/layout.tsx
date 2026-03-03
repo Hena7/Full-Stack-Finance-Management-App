@@ -28,12 +28,10 @@ export default function RootLayout({
               (function() {
                 try {
                   var settings = JSON.parse(localStorage.getItem('budgetwise_settings') || '{}');
-                  if (settings.darkMode !== false) {
+                  if (settings.darkMode === true) {
                     document.documentElement.classList.add('dark');
                   }
-                } catch(e) {
-                  document.documentElement.classList.add('dark');
-                }
+                } catch(e) {}
               })();
             `,
           }}
