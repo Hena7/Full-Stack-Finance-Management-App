@@ -3,6 +3,7 @@ import api from "../axios";
 export interface AuthResponse {
   token: string;
   message: string;
+  role: string;
 }
 
 export const AuthApiService = {

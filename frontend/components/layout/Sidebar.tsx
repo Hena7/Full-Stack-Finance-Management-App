@@ -15,6 +15,7 @@ import {
   PieChart,
   Settings,
   X,
+  Shield,
 } from "lucide-react";
 
 interface SidebarProps {
@@ -36,7 +37,7 @@ const navLinks = [
 
 export function Sidebar({ isOpen, onClose }: SidebarProps) {
   const pathname = usePathname();
-  const { currentUser } = useAuth();
+  const { currentUser, isAdmin } = useAuth();
 
   const userInitials = currentUser?.name
     ? currentUser.name
@@ -104,6 +105,23 @@ export function Sidebar({ isOpen, onClose }: SidebarProps) {
               </Link>
             );
           })}
+
+          {/* Admin link */}
+          {isAdmin && (
+            <Link
+              href="/admin"
+              onClick={() => onClose()}
+              className={cn(
+                "flex items-center gap-3 px-4 py-3 rounded-lg transition-all duration-200 mb-2 font-medium mt-4 border-t border-slate-200 dark:border-slate-800 pt-4",
+                pathname === "/admin"
+                  ? "text-purple-500 bg-purple-500/10 shadow-[0_0_20px_rgba(168,85,247,0.3)]"
+                  : "text-slate-600 hover:text-slate-900 hover:bg-slate-100 dark:text-slate-400 dark:hover:text-slate-100 dark:hover:bg-slate-800",
+              )}
+            >
+              <Shield className="w-5 h-5" />
+              <span>Admin Panel</span>
+            </Link>
+          )}
         </nav>
 
         {/* User Info */}

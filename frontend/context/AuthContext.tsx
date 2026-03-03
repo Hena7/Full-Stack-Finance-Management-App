@@ -8,12 +8,14 @@ const CURRENT_USER_KEY = "budgetwise_current_user";
 
 interface User {
   email: string;
-  name: string; // We store this locally since Backend token doesn't include it
+  name: string;
+  role: string;
 }
 
 interface AuthContextType {
   currentUser: User | null;
   isAuthenticated: boolean;
+  isAdmin: boolean;
   isLoading: boolean;
   isSubmitting: boolean;
   register: (name: string, email: string, password: string) => Promise<void>;
@@ -64,7 +66,11 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       localStorage.setItem(TOKEN_KEY, response.token);
 
       // Save user info locally (Backend token contains email via JWT claims)
-      const user: User = { email, name: email.split("@")[0] }; // Use email prefix as name fallback
+      const user: User = {
+        email,
+        name: email.split("@")[0], // Use email prefix as name fallback
+        role: response.role || "USER",
+      };
       localStorage.setItem(CURRENT_USER_KEY, JSON.stringify(user));
       setCurrentUser(user);
     } finally {
@@ -84,6 +90,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       value={{
         currentUser,
         isAuthenticated: !!currentUser,
+        isAdmin: currentUser?.role === "ADMIN",
         isLoading,
         isSubmitting,
         register,

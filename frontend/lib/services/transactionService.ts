@@ -3,7 +3,7 @@ import { Transaction, TransactionType } from "@/hooks/useTransactions";
 
 // Convert Backend response to Frontend Transaction shape
 const mapToFrontend = (item: any, type: TransactionType): Transaction => ({
-  id: item.id.toString(),
+  id: `${type}-${item.id}`,
   amount: item.amount,
   type,
   categoryId: item.category?.id ?? undefined,
@@ -11,6 +11,12 @@ const mapToFrontend = (item: any, type: TransactionType): Transaction => ({
   description: item.description ?? "",
   date: item.date,
 });
+
+// Helper to get raw backend ID
+const getRawId = (prefixedId: string) => {
+  const parts = prefixedId.split("-");
+  return parts.length > 1 ? parts[1] : parts[0];
+};
 
 // Build the payload Backend expects (IncomeRequest / ExpenseRequest)
 const buildPayload = (data: any) => ({
@@ -49,12 +55,17 @@ export const TransactionService = {
     updates: any,
   ): Promise<Transaction> => {
     const endpoint = type === "income" ? "/incomes" : "/expenses";
-    const response = await api.put(`${endpoint}/${id}`, buildPayload(updates));
+    const rawId = getRawId(id);
+    const response = await api.put(
+      `${endpoint}/${rawId}`,
+      buildPayload(updates),
+    );
     return mapToFrontend(response.data, type);
   },
 
   delete: async (id: string, type: TransactionType): Promise<void> => {
     const endpoint = type === "income" ? "/incomes" : "/expenses";
-    await api.delete(`${endpoint}/${id}`);
+    const rawId = getRawId(id);
+    await api.delete(`${endpoint}/${rawId}`);
   },
 };
