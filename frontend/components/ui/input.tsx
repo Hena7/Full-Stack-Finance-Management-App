@@ -6,10 +6,14 @@ export interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> 
   label?: string;
   error?: string;
   hint?: string;
+  rightElement?: React.ReactNode;
 }
 
 const Input = React.forwardRef<HTMLInputElement, InputProps>(
-  ({ className, type, label, error, hint, id, ...props }, ref) => {
+  (
+    { className, type, label, error, hint, id, rightElement, ...props },
+    ref,
+  ) => {
     const inputId = id || React.useId();
 
     return (
@@ -31,12 +35,18 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
             className={cn(
               "flex w-full rounded-lg border border-slate-300 bg-white text-slate-900 placeholder:text-slate-400 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-100 dark:placeholder:text-slate-500 px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent disabled:cursor-not-allowed disabled:opacity-50 transition-all duration-200",
               error && "border-red-500 focus:ring-red-500/50",
+              rightElement && "pr-11",
               className,
             )}
             ref={ref}
             {...props}
           />
-          {error && (
+          {rightElement && (
+            <div className="absolute right-3 top-1/2 -translate-y-1/2">
+              {rightElement}
+            </div>
+          )}
+          {error && !rightElement && (
             <div className="absolute right-3 top-1/2 -translate-y-1/2 text-red-500 pointer-events-none">
               <AlertCircle size={20} />
             </div>
