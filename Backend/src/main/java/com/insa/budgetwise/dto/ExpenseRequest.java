@@ -15,5 +15,5 @@ public class ExpenseRequest {
     private Double amount;
     private String description;
     private LocalDate date;
-    private Long categoryId; // Optional: reference to category
+    private Long categoryId; // reference to category
 }

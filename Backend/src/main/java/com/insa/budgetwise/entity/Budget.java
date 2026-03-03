@@ -21,15 +21,14 @@ public class Budget {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-
     @Column(nullable = false)
     @Positive(message = "Amount must be greater than zero")
-    private Double amount; // Eg፦ 5000
-
+    private Double amount;
 
     @Column(nullable = false)
-    @Min(1) @Max(12)
-    private Integer month; // 1 - 12
+    @Min(1)
+    @Max(12)
+    private Integer month;
 
     @Column(nullable = false)
     private Integer year;

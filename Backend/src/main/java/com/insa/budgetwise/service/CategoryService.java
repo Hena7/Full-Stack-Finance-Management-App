@@ -17,14 +17,12 @@ public class CategoryService {
     private final CategoryRepository categoryRepository;
     private final UserRepository userRepository;
 
-    // Get all categories for the logged-in user
     public List<Category> getMyCategories(String email) {
         User user = userRepository.findByEmail(email)
                 .orElseThrow(() -> new RuntimeException("User not found"));
         return categoryRepository.findByUserId(user.getId());
     }
 
-    // Create a new category
     public Category createCategory(String name, CategoryType type, String email) {
         User user = userRepository.findByEmail(email)
                 .orElseThrow(() -> new RuntimeException("User not found"));
@@ -38,7 +36,6 @@ public class CategoryService {
         return categoryRepository.save(category);
     }
 
-    // Delete a category
     public void deleteCategory(Long id, String email) {
         User user = userRepository.findByEmail(email)
                 .orElseThrow(() -> new RuntimeException("User not found"));

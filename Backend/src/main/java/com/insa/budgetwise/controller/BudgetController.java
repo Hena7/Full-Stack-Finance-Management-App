@@ -41,7 +41,6 @@ public class BudgetController {
         return ResponseEntity.ok(budgetService.updateBudget(id, request, authentication.getName()));
     }
 
-    // (eg፦ /api/budgets/status?userId=1&categoryId=2&month=5&year=2024)
     @GetMapping("/status")
     public ResponseEntity<BudgetStatusResponse> getBudgetStatus(
             @RequestParam Long userId,

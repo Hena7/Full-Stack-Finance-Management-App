@@ -18,14 +18,11 @@ public class CategoryController {
 
     private final CategoryService categoryService;
 
-    // GET /api/categories => ሁሉንም ካተጎሪዎቼን አምጣ
     @GetMapping
     public ResponseEntity<List<Category>> getMyCategories(Authentication authentication) {
         return ResponseEntity.ok(categoryService.getMyCategories(authentication.getName()));
     }
 
-    // POST /api/categories => አዲስ ካተጎሪ ፍጠር
-    // Body: { "name": "Salary", "type": "INCOME" }
     @PostMapping
     public ResponseEntity<Category> createCategory(
             @RequestBody Map<String, String> body,
@@ -35,7 +32,6 @@ public class CategoryController {
         return ResponseEntity.ok(categoryService.createCategory(name, type, authentication.getName()));
     }
 
-    // DELETE /api/categories/{id} => ካተጎሪ ሰርዝ
     @DeleteMapping("/{id}")
     public ResponseEntity<String> deleteCategory(
             @PathVariable Long id,

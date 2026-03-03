@@ -25,8 +25,6 @@ public class SecurityConfig {
         private final AuthenticationProvider authenticationProvider;
         private final JwtAuthenticationFilter jwtAuthFilter;
 
-        // CORS: Allow Next.js frontend (localhost:3000) to talk to Spring Boot
-        // (localhost:8080)
         @Bean
         public FilterRegistrationBean<CorsFilter> corsFilter() {
                 UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
